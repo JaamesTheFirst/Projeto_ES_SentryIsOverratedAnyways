@@ -15,7 +15,7 @@ services:
     networks:
       - error-management-network
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-admin}']
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-admin} -d ${POSTGRES_DB:-error_management}']
       interval: 10s
       timeout: 5s
       retries: 5
