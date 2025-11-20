@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Errors - Error Management Platform</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .filters-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f3f4f6;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            background: #e5e7eb;
+        }
+
+        .chip.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .errors-table {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .error-row {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f3f4f6;
+            display: grid;
+            grid-template-columns: 40px 1fr auto auto;
+            gap: 1.5rem;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .error-row:hover {
+            background: #f9fafb;
+        }
+
+        .error-row:last-child {
+            border-bottom: none;
+        }
+
+        .error-checkbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-checkbox input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .error-main {
+            flex: 1;
+        }
+
+        .error-title-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-title-text {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 1rem;
+        }
+
+        .error-details {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            flex-wrap: wrap;
+        }
+
+        .error-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .error-count-badge {
+            background: #f3f4f6;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .error-count-number {
+            display: block;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .error-count-label {
+            display: block;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .bulk-actions {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-top: 1.5rem;
+        }
+
+        .pagination-info {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .page-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="navbar-brand">
+                <span>🚀</span>
+                <span>Error Management</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="errors.html" class="active">Errors</a></li>
+                <li><a href="settings.html">Settings</a></li>
+            </ul>
+            <div class="navbar-actions">
+                <a href="register-incident.html" class="btn btn-sm btn-secondary" style="text-decoration: none;">+ Report Error</a>
+                <button class="btn btn-sm btn-primary">+ New Project</button>
+                <div class="user-menu">
+                    <div class="avatar">JD</div>
+                    <span>John Doe</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container main-content">
+        <!-- Page Header -->
+        <div class="page-header flex-between">
+            <div>
+                <h1 class="page-title">All Errors</h1>
+                <p class="page-subtitle">Track and manage errors across all projects</p>
+            </div>
+            <div class="flex gap-2">
+                <button class="btn btn-outline btn-sm">Export</button>
+                <button class="btn btn-secondary btn-sm">Filters</button>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <div class="filters-row">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Search errors by message, file, or project..." />
+                </div>
+                <select class="form-select" style="width: auto;">
+                    <option>All Projects</option>
+                    <option>Web App</option>
+                    <option>Mobile App</option>
+                    <option>Backend API</option>
+                </select>
+                <select class="form-select" style="width: auto;">
+                    <option>Last 7 days</option>
+                    <option>Last 24 hours</option>
+                    <option>Last 30 days</option>
+                    <option>All time</option>
+                </select>
+            </div>
+            
+            <div class="filter-chips">
+                <div class="chip active">🐛 All (1,247)</div>
+                <div class="chip">🔴 Critical (234)</div>
+                <div class="chip">⚠️ Warning (456)</div>
+                <div class="chip">ℹ️ Info (557)</div>
+                <div class="chip">✅ Resolved (863)</div>
+                <div class="chip">❌ Unresolved (384)</div>
+            </div>
+        </div>
+
+        <!-- Errors Table -->
+        <div class="errors-table">
+            <div class="table-header">
+                <div class="flex gap-2" style="align-items: center;">
+                    <input type="checkbox" style="width: 18px; height: 18px;" />
+                    <span class="text-sm text-muted">Select all</span>
+                </div>
+                <div class="flex gap-2">
+                    <button class="btn btn-sm btn-outline">Resolve Selected</button>
+                    <button class="btn btn-sm btn-outline">Assign</button>
+                    <button class="btn btn-sm btn-outline">Delete</button>
+                </div>
+            </div>
+
+            <!-- Error 1 -->
+            <div class="error-row">
+                <div class="error-checkbox">
+                    <input type="checkbox" />
+                </div>
+                <div class="error-main">
+                    <div class="error-title-row">
+                        <span class="badge badge-error">Critical</span>
+                        <h3 class="error-title-text">TypeError: Cannot read property 'map' of undefined</h3>
+                    </div>
+                    <div class="error-details">
+                        <span class="error-detail-item">🚀 E-Commerce Web App</span>
+                        <span class="error-detail-item">📁 ProductList.jsx:45</span>
+                        <span class="error-detail-item">🕐 5 minutes ago</span>
+                        <span class="error-detail-item">👤 Unassigned</span>
+                    </div>
+                </div>
+                <div class="error-count-badge">
+                    <span class="error-count-number">127</span>
+                    <span class="error-count-label">events</span>
+                </div>
+                <button class="btn btn-sm btn-outline">View</button>
+            </div>
+
+            <!-- Error 2 -->
+            <div class="error-row">
+                <div class="error-checkbox">
+                    <input type="checkbox" />
+                </div>
+                <div class="error-main">
+                    <div class="error-title-row">
+                        <span class="badge badge-error">Critical</span>
+                        <h3 class="error-title-text">Database Connection Failed</h3>
+                    </div>
+                    <div class="error-details">
+                        <span class="error-detail-item">🚀 Backend API</span>
+                        <span class="error-detail-item">📁 database.ts:12</span>
+                        <span class="error-detail-item">🕐 15 minutes ago</span>
+                        <span class="error-detail-item">👤 John Smith</span>
+                    </div>
+                </div>
+                <div class="error-count-badge">
+                    <span class="error-count-number">234</span>
+                    <span class="error-count-label">events</span>
+                </div>
+                <button class="btn btn-sm btn-outline">View</button>
+            </div>
+
+            <!-- Error 3 -->
+            <div class="error-row">
+                <div class="error-checkbox">
+                    <input type="checkbox" />
+                </div>
+                <div class="error-main">
+                    <div class="error-title-row">
+                        <span class="badge badge-warning">Warning</span>
+                        <h3 class="error-title-text">ReferenceError: fetch is not defined</h3>
+                    </div>
+                    <div class="error-details">
+                        <span class="error-detail-item">🚀 API Service</span>
+                        <span class="error-detail-item">📁 api.service.ts:89</span>
+                        <span class="error-detail-item">🕐 1 hour ago</span>
+                        <span class="error-detail-item">👤 Sarah Johnson</span>
+                    </div>
+                </div>
+                <div class="error-count-badge">
+                    <span class="error-count-number">43</span>
+                    <span class="error-count-label">events</span>
+                </div>
+                <button class="btn btn-sm btn-outline">View</button>
+            </div>
+
+            <!-- Error 4 -->
+            <div class="error-row">
+                <div class="error-checkbox">
+                    <input type="checkbox" />
+                </div>
+                <div class="error-main">
+                    <div class="error-title-row">
+                        <span class="badge badge-warning">Warning</span>
+                        <h3 class="error-title-text">Network Error: Request timeout</h3>
+                    </div>
+                    <div class="error-details">
+                        <span class="error-detail-item">🚀 Mobile App iOS</span>
+                        <span class="error-detail-item">📁 NetworkManager.swift:234</span>
+                        <span class="error-detail-item">🕐 3 hours ago</span>
+                        <span class="error-detail-item">👤 Unassigned</span>
+                    </div>
+                </div>
+                <div class="error-count-badge">
+                    <span class="error-count-number">89</span>
+                    <span class="error-count-label">events</span>
+                </div>
+                <button class="btn btn-sm btn-outline">View</button>
+            </div>
+
+            <!-- Error 5 -->
+            <div class="error-row">
+                <div class="error-checkbox">
+                    <input type="checkbox" />
+                </div>
+                <div class="error-main">
+                    <div class="error-title-row">
+                        <span class="badge badge-info">Info</span>
+                        <h3 class="error-title-text">Validation Error: Invalid email format</h3>
+                    </div>
+                    <div class="error-details">
+                        <span class="error-detail-item">🚀 E-Commerce Web App</span>
+                        <span class="error-detail-item">📁 LoginForm.tsx:67</span>
+                        <span class="error-detail-item">🕐 5 hours ago</span>
+                        <span class="error-detail-item">👤 Mike Wilson</span>
+                    </div>
+                </div>
+                <div class="error-count-badge">
+                    <span class="error-count-number">12</span>
+                    <span class="error-count-label">events</span>
+                </div>
+                <button class="btn btn-sm btn-outline">View</button>
+            </div>
+
+            <!-- Error 6 -->
+            <div class="error-row">
+                <div class="error-checkbox">
+                    <input type="checkbox" />
+                </div>
+                <div class="error-main">
+                    <div class="error-title-row">
+                        <span class="badge badge-warning">Warning</span>
+                        <h3 class="error-title-text">Memory leak detected in component lifecycle</h3>
+                    </div>
+                    <div class="error-details">
+                        <span class="error-detail-item">🚀 Admin Dashboard</span>
+                        <span class="error-detail-item">📁 DataTable.jsx:156</span>
+                        <span class="error-detail-item">🕐 1 day ago</span>
+                        <span class="error-detail-item">👤 Emma Davis</span>
+                    </div>
+                </div>
+                <div class="error-count-badge">
+                    <span class="error-count-number">67</span>
+                    <span class="error-count-label">events</span>
+                </div>
+                <button class="btn btn-sm btn-outline">View</button>
+            </div>
+
+            <!-- Error 7 -->
+            <div class="error-row">
+                <div class="error-checkbox">
+                    <input type="checkbox" />
+                </div>
+                <div class="error-main">
+                    <div class="error-title-row">
+                        <span class="badge badge-error">Critical</span>
+                        <h3 class="error-title-text">Unhandled Promise Rejection: Network failure</h3>
+                    </div>
+                    <div class="error-details">
+                        <span class="error-detail-item">🚀 Payment Gateway</span>
+                        <span class="error-detail-item">📁 payment.service.ts:98</span>
+                        <span class="error-detail-item">🕐 2 days ago</span>
+                        <span class="error-detail-item">👤 Tom Anderson</span>
+                    </div>
+                </div>
+                <div class="error-count-badge">
+                    <span class="error-count-number">178</span>
+                    <span class="error-count-label">events</span>
+                </div>
+                <button class="btn btn-sm btn-outline">View</button>
+            </div>
+
+            <!-- Error 8 -->
+            <div class="error-row">
+                <div class="error-checkbox">
+                    <input type="checkbox" />
+                </div>
+                <div class="error-main">
+                    <div class="error-title-row">
+                        <span class="badge badge-info">Info</span>
+                        <h3 class="error-title-text">Deprecated API warning: Using old authentication method</h3>
+                    </div>
+                    <div class="error-details">
+                        <span class="error-detail-item">🚀 Android App</span>
+                        <span class="error-detail-item">📁 AuthManager.kt:45</span>
+                        <span class="error-detail-item">🕐 3 days ago</span>
+                        <span class="error-detail-item">👤 Unassigned</span>
+                    </div>
+                </div>
+                <div class="error-count-badge">
+                    <span class="error-count-number">23</span>
+                    <span class="error-count-label">events</span>
+                </div>
+                <button class="btn btn-sm btn-outline">View</button>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <div class="pagination-info">
+                Showing 1-8 of 1,247 errors
+            </div>
+            <div class="pagination-controls">
+                <button class="page-btn" disabled>←</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">...</button>
+                <button class="page-btn">157</button>
+                <button class="page-btn">→</button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+

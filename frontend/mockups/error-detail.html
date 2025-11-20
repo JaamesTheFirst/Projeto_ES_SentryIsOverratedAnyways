@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Detail - Error Management Platform</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb-separator {
+            color: #9ca3af;
+        }
+
+        .error-header {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .error-title-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .error-title-main {
+            flex: 1;
+        }
+
+        .error-title-main h1 {
+            font-size: 1.75rem;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .error-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .meta-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .meta-value {
+            font-size: 1rem;
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .main-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+
+        .stack-trace {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+
+        .stack-trace-line {
+            margin-bottom: 0.5rem;
+        }
+
+        .stack-trace-error {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .stack-trace-file {
+            color: #fbbf24;
+        }
+
+        .stack-trace-line-number {
+            color: #60a5fa;
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-meta {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .occurrence-chart {
+            height: 200px;
+            background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .affected-users {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #1f2937;
+            font-size: 0.875rem;
+        }
+
+        .user-email {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .user-count {
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1rem;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .context-data {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="navbar-brand">
+                <span>🚀</span>
+                <span>Error Management</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="errors.html" class="active">Errors</a></li>
+                <li><a href="settings.html">Settings</a></li>
+            </ul>
+            <div class="navbar-actions">
+                <a href="register-incident.html" class="btn btn-sm btn-secondary" style="text-decoration: none;">+ Report Error</a>
+                <button class="btn btn-sm btn-primary">+ New Project</button>
+                <div class="user-menu">
+                    <div class="avatar">JD</div>
+                    <span>John Doe</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container main-content">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="dashboard.html">Dashboard</a>
+            <span class="breadcrumb-separator">›</span>
+            <a href="errors.html">Errors</a>
+            <span class="breadcrumb-separator">›</span>
+            <span>Error Details</span>
+        </div>
+
+        <!-- Error Header -->
+        <div class="error-header">
+            <div class="error-title-section">
+                <div class="error-title-main">
+                    <div class="flex gap-2" style="align-items: center; margin-bottom: 0.75rem;">
+                        <span class="badge badge-error">Critical</span>
+                        <span class="badge" style="background: #f3f4f6; color: #1f2937;">Unresolved</span>
+                    </div>
+                    <h1>TypeError: Cannot read property 'map' of undefined</h1>
+                </div>
+                <div class="error-actions">
+                    <button class="btn btn-success btn-sm">✓ Resolve</button>
+                    <button class="btn btn-outline btn-sm">Assign</button>
+                    <button class="btn btn-outline btn-sm">Ignore</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </div>
+            </div>
+
+            <div class="error-meta-grid">
+                <div class="meta-item">
+                    <span class="meta-label">Project</span>
+                    <span class="meta-value">🚀 E-Commerce Web App</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Environment</span>
+                    <span class="meta-value">Production</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">First Seen</span>
+                    <span class="meta-value">Nov 10, 2025 14:23</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Last Seen</span>
+                    <span class="meta-value">Nov 14, 2025 16:45</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Total Events</span>
+                    <span class="meta-value" style="color: #ef4444; font-weight: 700;">127 occurrences</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Affected Users</span>
+                    <span class="meta-value">43 users</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Main Section -->
+            <div class="main-section">
+                <!-- Stack Trace -->
+                <div class="section-card">
+                    <h2 class="section-title">Stack Trace</h2>
+                    <div class="stack-trace">
+                        <div class="stack-trace-line stack-trace-error">
+                            TypeError: Cannot read property 'map' of undefined
+                        </div>
+                        <div class="stack-trace-line">
+                            at <span class="stack-trace-file">ProductList.render</span> (<span class="stack-trace-file">ProductList.jsx</span>:<span class="stack-trace-line-number">45</span>:<span class="stack-trace-line-number">12</span>)
+                        </div>
+                        <div class="stack-trace-line">
+                            at <span class="stack-trace-file">finishClassComponent</span> (react-dom.production.min.js:<span class="stack-trace-line-number">8891</span>:<span class="stack-trace-line-number">31</span>)
+                        </div>
+                        <div class="stack-trace-line">
+                            at <span class="stack-trace-file">updateClassComponent</span> (react-dom.production.min.js:<span class="stack-trace-line-number">8856</span>:<span class="stack-trace-line-number">24</span>)
+                        </div>
+                        <div class="stack-trace-line">
+                            at <span class="stack-trace-file">beginWork</span> (react-dom.production.min.js:<span class="stack-trace-line-number">9478</span>:<span class="stack-trace-line-number">16</span>)
+                        </div>
+                        <div class="stack-trace-line">
+                            at <span class="stack-trace-file">performUnitOfWork</span> (react-dom.production.min.js:<span class="stack-trace-line-number">12389</span>:<span class="stack-trace-line-number">12</span>)
+                        </div>
+                        <div class="stack-trace-line">
+                            at <span class="stack-trace-file">workLoopSync</span> (react-dom.production.min.js:<span class="stack-trace-line-number">12362</span>:<span class="stack-trace-line-number">22</span>)
+                        </div>
+                        <div class="stack-trace-line">
+                            at <span class="stack-trace-file">renderRootSync</span> (react-dom.production.min.js:<span class="stack-trace-line-number">12339</span>:<span class="stack-trace-line-number">7</span>)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Context -->
+                <div class="section-card">
+                    <div class="tabs">
+                        <div class="tab active">Context</div>
+                        <div class="tab">Request</div>
+                        <div class="tab">User Agent</div>
+                        <div class="tab">Breadcrumbs</div>
+                    </div>
+                    
+                    <div class="context-data">
+                        <div style="margin-bottom: 0.5rem;"><strong>URL:</strong> https://example.com/products</div>
+                        <div style="margin-bottom: 0.5rem;"><strong>Browser:</strong> Chrome 119.0.0.0</div>
+                        <div style="margin-bottom: 0.5rem;"><strong>OS:</strong> Windows 10</div>
+                        <div style="margin-bottom: 0.5rem;"><strong>Screen:</strong> 1920x1080</div>
+                        <div style="margin-bottom: 0.5rem;"><strong>Component State:</strong></div>
+                        <div style="padding-left: 1rem; color: #6b7280;">
+                            {<br/>
+                            &nbsp;&nbsp;"products": undefined,<br/>
+                            &nbsp;&nbsp;"loading": false,<br/>
+                            &nbsp;&nbsp;"error": null<br/>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Occurrences Over Time -->
+                <div class="section-card">
+                    <h2 class="section-title">Occurrences Over Time</h2>
+                    <div class="occurrence-chart">
+                        📈 Error frequency chart (Last 7 days)
+                        <br />
+                        <span style="font-size: 0.75rem; color: #9ca3af;">
+                            (Would be implemented with Chart.js)
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Section -->
+            <div class="sidebar-section">
+                <!-- Activity Timeline -->
+                <div class="section-card">
+                    <h2 class="section-title">Activity Timeline</h2>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-icon">🐛</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Error first occurred</div>
+                                <div class="timeline-meta">Nov 10, 2025 at 14:23</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon">👤</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Assigned to John Smith</div>
+                                <div class="timeline-meta">Nov 11, 2025 at 09:15</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon">💬</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Comment added by John Smith</div>
+                                <div class="timeline-meta">Nov 12, 2025 at 11:30</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon">📌</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Priority changed to Critical</div>
+                                <div class="timeline-meta">Nov 13, 2025 at 16:20</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Affected Users -->
+                <div class="section-card">
+                    <h2 class="section-title">Top Affected Users</h2>
+                    <div class="affected-users">
+                        <div class="user-item">
+                            <div class="user-avatar">AM</div>
+                            <div class="user-info">
+                                <div class="user-name">Alice Miller</div>
+                                <div class="user-email">alice@example.com</div>
+                            </div>
+                            <div class="user-count">23×</div>
+                        </div>
+                        <div class="user-item">
+                            <div class="user-avatar">BJ</div>
+                            <div class="user-info">
+                                <div class="user-name">Bob Johnson</div>
+                                <div class="user-email">bob@example.com</div>
+                            </div>
+                            <div class="user-count">18×</div>
+                        </div>
+                        <div class="user-item">
+                            <div class="user-avatar">CS</div>
+                            <div class="user-info">
+                                <div class="user-name">Carol Smith</div>
+                                <div class="user-email">carol@example.com</div>
+                            </div>
+                            <div class="user-count">15×</div>
+                        </div>
+                        <div class="user-item">
+                            <div class="user-avatar">DW</div>
+                            <div class="user-info">
+                                <div class="user-name">David Wilson</div>
+                                <div class="user-email">david@example.com</div>
+                            </div>
+                            <div class="user-count">12×</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline btn-sm mt-2" style="width: 100%;">View All Users</button>
+                </div>
+
+                <!-- Similar Incidents -->
+                <div class="section-card">
+                    <h2 class="section-title">📎 Similar Incidents</h2>
+                    <p class="text-sm text-muted mb-3">Errors with similar patterns or stack traces</p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div style="padding: 0.75rem; background: #f9fafb; border-radius: 8px; border-left: 3px solid #667eea; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='#f9fafb'">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                                <span class="badge badge-error" style="font-size: 0.75rem;">85% match</span>
+                                <span style="font-weight: 600; font-size: 0.875rem;">TypeError: Cannot read property 'id' of undefined</span>
+                            </div>
+                            <div style="font-size: 0.75rem; color: #6b7280;">
+                                ProductDetail.jsx:67 • 45 events • 2 days ago
+                            </div>
+                        </div>
+
+                        <div style="padding: 0.75rem; background: #f9fafb; border-radius: 8px; border-left: 3px solid #667eea; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='#f9fafb'">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                                <span class="badge badge-warning" style="font-size: 0.75rem;">73% match</span>
+                                <span style="font-weight: 600; font-size: 0.875rem;">TypeError: Cannot access 'data' before initialization</span>
+                            </div>
+                            <div style="font-size: 0.75rem; color: #6b7280;">
+                                DataTable.tsx:89 • 23 events • 3 days ago
+                            </div>
+                        </div>
+
+                        <div style="padding: 0.75rem; background: #f9fafb; border-radius: 8px; border-left: 3px solid #667eea; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='#f9fafb'">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                                <span class="badge badge-info" style="font-size: 0.75rem;">68% match</span>
+                                <span style="font-weight: 600; font-size: 0.875rem;">TypeError: Cannot read properties of null</span>
+                            </div>
+                            <div style="font-size: 0.75rem; color: #6b7280;">
+                                UserProfile.jsx:123 • 12 events • 5 days ago
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-outline btn-sm mt-2" style="width: 100%;">View All Similar Errors</button>
+                </div>
+
+                <!-- Tags -->
+                <div class="section-card">
+                    <h2 class="section-title">Tags</h2>
+                    <div class="flex gap-1" style="flex-wrap: wrap;">
+                        <span class="badge" style="background: #dbeafe; color: #1e40af;">frontend</span>
+                        <span class="badge" style="background: #fce7f3; color: #be185d;">react</span>
+                        <span class="badge" style="background: #fef3c7; color: #92400e;">rendering</span>
+                        <span class="badge" style="background: #dcfce7; color: #166534;">production</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+

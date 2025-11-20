@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - Error Management Platform</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+            border-color: #667eea;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .project-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-description {
+            color: #6b7280;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .project-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .project-stat {
+            text-align: center;
+        }
+
+        .project-stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .project-stat-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .project-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .project-meta {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .filters-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.875rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="navbar-brand">
+                <span>🚀</span>
+                <span>Error Management</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="projects.html" class="active">Projects</a></li>
+                <li><a href="errors.html">Errors</a></li>
+                <li><a href="settings.html">Settings</a></li>
+            </ul>
+            <div class="navbar-actions">
+                <a href="register-incident.html" class="btn btn-sm btn-secondary" style="text-decoration: none;">+ Report Error</a>
+                <button class="btn btn-sm btn-primary">+ New Project</button>
+                <div class="user-menu">
+                    <div class="avatar">JD</div>
+                    <span>John Doe</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container main-content">
+        <!-- Page Header -->
+        <div class="page-header flex-between">
+            <div>
+                <h1 class="page-title">Projects</h1>
+                <p class="page-subtitle">Manage and monitor all your applications</p>
+            </div>
+            <button class="btn btn-primary">+ Create New Project</button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" placeholder="Search projects..." />
+            </div>
+            <div class="filter-group">
+                <label class="text-sm text-muted">Status:</label>
+                <select class="form-select" style="width: auto; padding: 0.5rem 1rem;">
+                    <option>All Projects</option>
+                    <option>Active</option>
+                    <option>Archived</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="text-sm text-muted">Sort by:</label>
+                <select class="form-select" style="width: auto; padding: 0.5rem 1rem;">
+                    <option>Most Recent</option>
+                    <option>Most Errors</option>
+                    <option>Name A-Z</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Projects Grid -->
+        <div class="projects-grid">
+            <!-- Project 1 -->
+            <div class="project-card">
+                <div class="project-icon">🌐</div>
+                <div class="project-header">
+                    <div style="flex: 1;">
+                        <h3 class="project-title">E-Commerce Web App</h3>
+                        <div class="flex gap-1" style="margin-bottom: 0.5rem;">
+                            <span class="status-dot active"></span>
+                            <span class="text-sm text-muted">Active</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="project-description">
+                    Main customer-facing e-commerce platform built with React and Node.js
+                </p>
+                <div class="project-stats">
+                    <div class="project-stat">
+                        <div class="project-stat-value">342</div>
+                        <div class="project-stat-label">Errors</div>
+                    </div>
+                    <div class="project-stat">
+                        <div class="project-stat-value">89</div>
+                        <div class="project-stat-label">Unresolved</div>
+                    </div>
+                    <div class="project-stat">
+                        <div class="project-stat-value">24h</div>
+                        <div class="project-stat-label">Last Error</div>
+                    </div>
+                </div>
+                <div class="project-footer">
+                    <div class="project-meta">
+                        Updated 2 hours ago
+                    </div>
+                    <button class="btn btn-sm btn-outline">View Details</button>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="project-card">
+                <div class="project-icon">📱</div>
+                <div class="project-header">
+                    <div style="flex: 1;">
+                        <h3 class="project-title">Mobile App iOS</h3>
+                        <div class="flex gap-1" style="margin-bottom: 0.5rem;">
+                            <span class="status-dot active"></span>
+                            <span class="text-sm text-muted">Active</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="project-description">
+                    Native iOS application built with Swift for enhanced mobile experience
+                </p>
+                <div class="project-stats">
+                    <div class="project-stat">
+                        <div class="project-stat-value">127</div>
+                        <div class="project-stat-label">Errors</div>
+                    </div>
+                    <div class="project-stat">
+                        <div class="project-stat-value">23</div>
+                        <div class="project-stat-label">Unresolved</div>
+                    </div>
+                    <div class="project-stat">
+                        <div class="project-stat-value">1h</div>
+                        <div class="project-stat-label">Last Error</div>
+                    </div>
+                </div>
+                <div class="project-footer">
+                    <div class="project-meta">
+                        Updated 5 hours ago
+                    </div>
+                    <button class="btn btn-sm btn-outline">View Details</button>
+                </div>
+            </div>
+
+            <!-- Project 3 -->
+            <div class="project-card">
+                <div class="project-icon">🤖</div>
+                <div class="project-header">
+                    <div style="flex: 1;">
+                        <h3 class="project-title">Android App</h3>
+                        <div class="flex gap-1" style="margin-bottom: 0.5rem;">
+                            <span class="status-dot active"></span>
+                            <span class="text-sm text-muted">Active</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="project-description">
+                    Native Android application built with Kotlin for Google Play Store
+                </p>
+                <div class="project-stats">
+                    <div class="project-stat">
+                        <div class="project-stat-value">298</div>
+                        <div class="project-stat-label">Errors</div>
+                    </div>
+                    <div class="project-stat">
+                        <div class="project-stat-value">67</div>
+                        <div class="project-stat-label">Unresolved</div>
+                    </div>
+                    <div class="project-stat">
+                        <div class="project-stat-value">3h</div>
+                        <div class="project-stat-label">Last Error</div>
+                    </div>
+                </div>
+                <div class="project-footer">
+                    <div class="project-meta">
+                        Updated 1 day ago
+                    </div>
+                    <button class="btn btn-sm btn-outline">View Details</button>
+                </div>
+            </div>
+
+            <!-- Project 4 -->
+            <div class="project-card">
+                <div class="project-icon">⚙️</div>
+                <div class="project-header">
+                    <div style="flex: 1;">
+                        <h3 class="project-title">Backend API</h3>
+                        <div class="flex gap-1" style="margin-bottom: 0.5rem;">
+                            <span class="status-dot active"></span>
+                            <span class="text-sm text-muted">Active</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="project-description">
+                    REST API service handling all backend operations with NestJS
+                </p>
+                <div class="project-stats">
+                    <div class="project-stat">
+                        <div class="project-stat-value">156</div>
+                        <div class="project-stat-label">Errors</div>
+                    </div>
+                    <div class="project-stat">
+                        <div class="project-stat-value">12</div>
+                        <div class="project-stat-label">Unresolved</div>
+                    </div>
+                    <div class="project-stat">
+                        <div class="project-stat-value">30m</div>
+                        <div class="project-stat-label">Last Error</div>
+                    </div>
+                </div>
+                <div class="project-footer">
+                    <div class="project-meta">
+                        Updated 30 minutes ago
+                    </div>
+                    <button class="btn btn-sm btn-outline">View Details</button>
+                </div>
+            </div>
+
+            <!-- Project 5 -->
+            <div class="project-card">
+                <div class="project-icon">💳</div>
+                <div class="project-header">
+                    <div style="flex: 1;">
+                        <h3 class="project-title">Payment Gateway</h3>
+                        <div class="flex gap-1" style="margin-bottom: 0.5rem;">
+                            <span class="status-dot active"></span>
+                            <span class="text-sm text-muted">Active</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="project-description">
+                    Secure payment processing microservice with Stripe integration
+                </p>
+                <div class="project-stats">
+                    <div class="project-stat">
+                        <div class="project-stat-value">45</div>
+                        <div class="project-stat-label">Errors</div>
+                    </div>
+                    <div class="project-stat">
+                        <div class="project-stat-value">3</div>
+                        <div class="project-stat-label">Unresolved</div>
+                    </div>
+                    <div class="project-stat">
+                        <div class="project-stat-value">2d</div>
+                        <div class="project-stat-label">Last Error</div>
+                    </div>
+                </div>
+                <div class="project-footer">
+                    <div class="project-meta">
+                        Updated 2 days ago
+                    </div>
+                    <button class="btn btn-sm btn-outline">View Details</button>
+                </div>
+            </div>
+
+            <!-- Project 6 -->
+            <div class="project-card">
+                <div class="project-icon">👥</div>
+                <div class="project-header">
+                    <div style="flex: 1;">
+                        <h3 class="project-title">Admin Dashboard</h3>
+                        <div class="flex gap-1" style="margin-bottom: 0.5rem;">
+                            <span class="status-dot warning"></span>
+                            <span class="text-sm text-muted">Maintenance</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="project-description">
+                    Internal admin panel for managing users and platform settings
+                </p>
+                <div class="project-stats">
+                    <div class="project-stat">
+                        <div class="project-stat-value">78</div>
+                        <div class="project-stat-label">Errors</div>
+                    </div>
+                    <div class="project-stat">
+                        <div class="project-stat-value">15</div>
+                        <div class="project-stat-label">Unresolved</div>
+                    </div>
+                    <div class="project-stat">
+                        <div class="project-stat-value">5h</div>
+                        <div class="project-stat-label">Last Error</div>
+                    </div>
+                </div>
+                <div class="project-footer">
+                    <div class="project-meta">
+                        Updated 3 hours ago
+                    </div>
+                    <button class="btn btn-sm btn-outline">View Details</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+

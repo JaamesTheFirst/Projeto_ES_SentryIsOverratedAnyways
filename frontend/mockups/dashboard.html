@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Error Management Platform</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.error {
+            background: #fee2e2;
+        }
+
+        .stat-icon.warning {
+            background: #fef3c7;
+        }
+
+        .stat-icon.success {
+            background: #d1fae5;
+        }
+
+        .stat-icon.info {
+            background: #dbeafe;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .stat-trend {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-trend.up {
+            color: #dc2626;
+        }
+
+        .stat-trend.down {
+            color: #059669;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .recent-errors {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .error-item {
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .error-item:last-child {
+            border-bottom: none;
+        }
+
+        .error-item:hover {
+            background: #f9fafb;
+        }
+
+        .error-info {
+            flex: 1;
+        }
+
+        .error-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .error-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .error-count {
+            background: #f3f4f6;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="navbar-brand">
+                <span>🚀</span>
+                <span>Error Management</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="errors.html">Errors</a></li>
+                <li><a href="settings.html">Settings</a></li>
+            </ul>
+            <div class="navbar-actions">
+                <a href="register-incident.html" class="btn btn-sm btn-secondary" style="text-decoration: none;">+ Report Error</a>
+                <button class="btn btn-sm btn-primary">+ New Project</button>
+                <div class="user-menu">
+                    <div class="avatar">JD</div>
+                    <span>John Doe</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container main-content">
+        <!-- Page Header -->
+        <div class="page-header flex-between">
+            <div>
+                <h1 class="page-title">Dashboard</h1>
+                <p class="page-subtitle">Welcome back! Here's what's happening with your projects.</p>
+            </div>
+            <div class="quick-actions">
+                <button class="btn btn-outline btn-sm">Last 7 days ▾</button>
+                <button class="btn btn-secondary btn-sm">Export Report</button>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">1,247</div>
+                        <div class="stat-label">Total Errors</div>
+                    </div>
+                    <div class="stat-icon error">🐛</div>
+                </div>
+                <div class="stat-trend up">
+                    ↑ 12% from last week
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">384</div>
+                        <div class="stat-label">Unresolved</div>
+                    </div>
+                    <div class="stat-icon warning">⚠️</div>
+                </div>
+                <div class="stat-trend up">
+                    ↑ 5% from last week
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">863</div>
+                        <div class="stat-label">Resolved</div>
+                    </div>
+                    <div class="stat-icon success">✅</div>
+                </div>
+                <div class="stat-trend down">
+                    ↓ 3% from last week
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Active Projects</div>
+                    </div>
+                    <div class="stat-icon info">📁</div>
+                </div>
+                <div class="stat-trend" style="color: #6b7280;">
+                    No change
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-container">
+            <div class="card-header">
+                <h2 class="card-title">Error Trends</h2>
+                <div class="flex gap-2">
+                    <button class="btn btn-sm btn-secondary">Day</button>
+                    <button class="btn btn-sm btn-outline">Week</button>
+                    <button class="btn btn-sm btn-outline">Month</button>
+                </div>
+            </div>
+            <div class="chart-placeholder">
+                📊 Error Trends Chart
+                <br />
+                <span style="font-size: 0.875rem; color: #9ca3af;">
+                    (Chart visualization would be implemented with Chart.js or similar)
+                </span>
+            </div>
+        </div>
+
+        <!-- Recent Errors -->
+        <div class="recent-errors">
+            <div class="card-header">
+                <h2 class="card-title">Recent Errors</h2>
+                <a href="errors.html" class="btn btn-sm btn-outline">View All</a>
+            </div>
+            <div>
+                <div class="error-item">
+                    <div class="error-info">
+                        <div class="error-title">TypeError: Cannot read property 'map' of undefined</div>
+                        <div class="error-meta">
+                            <span>🚀 <strong>Web App</strong></span>
+                            <span>📁 <strong>ProductList.jsx:45</strong></span>
+                            <span>🕐 <strong>5 minutes ago</strong></span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2" style="align-items: center;">
+                        <span class="badge badge-error">Critical</span>
+                        <span class="error-count">127 events</span>
+                    </div>
+                </div>
+
+                <div class="error-item">
+                    <div class="error-info">
+                        <div class="error-title">ReferenceError: fetch is not defined</div>
+                        <div class="error-meta">
+                            <span>🚀 <strong>API Service</strong></span>
+                            <span>📁 <strong>api.service.ts:89</strong></span>
+                            <span>🕐 <strong>1 hour ago</strong></span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2" style="align-items: center;">
+                        <span class="badge badge-warning">Warning</span>
+                        <span class="error-count">43 events</span>
+                    </div>
+                </div>
+
+                <div class="error-item">
+                    <div class="error-info">
+                        <div class="error-title">Network Error: Request timeout</div>
+                        <div class="error-meta">
+                            <span>🚀 <strong>Mobile App</strong></span>
+                            <span>📁 <strong>NetworkManager.swift:234</strong></span>
+                            <span>🕐 <strong>3 hours ago</strong></span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2" style="align-items: center;">
+                        <span class="badge badge-warning">Warning</span>
+                        <span class="error-count">89 events</span>
+                    </div>
+                </div>
+
+                <div class="error-item">
+                    <div class="error-info">
+                        <div class="error-title">Database Connection Failed</div>
+                        <div class="error-meta">
+                            <span>🚀 <strong>Backend API</strong></span>
+                            <span>📁 <strong>database.ts:12</strong></span>
+                            <span>🕐 <strong>5 hours ago</strong></span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2" style="align-items: center;">
+                        <span class="badge badge-error">Critical</span>
+                        <span class="error-count">234 events</span>
+                    </div>
+                </div>
+
+                <div class="error-item">
+                    <div class="error-info">
+                        <div class="error-title">Validation Error: Invalid email format</div>
+                        <div class="error-meta">
+                            <span>🚀 <strong>Web App</strong></span>
+                            <span>📁 <strong>LoginForm.tsx:67</strong></span>
+                            <span>🕐 <strong>1 day ago</strong></span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2" style="align-items: center;">
+                        <span class="badge badge-info">Info</span>
+                        <span class="error-count">12 events</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+

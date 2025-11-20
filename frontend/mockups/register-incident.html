@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Incident - Error Management Platform</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .code-editor {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            min-height: 200px;
+            border: 2px solid #374151;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload-area:hover {
+            border-color: #667eea;
+            background: #f5f7ff;
+        }
+
+        .file-upload-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .severity-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .severity-option {
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .severity-option:hover {
+            border-color: #667eea;
+            background: #f9fafb;
+        }
+
+        .severity-option input[type="radio"] {
+            display: none;
+        }
+
+        .severity-option input[type="radio"]:checked + label {
+            background: #667eea;
+            color: white;
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+
+        .severity-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid,
+            .severity-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="navbar-brand">
+                <span>🚀</span>
+                <span>Error Management</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="errors.html" class="active">Errors</a></li>
+                <li><a href="settings.html">Settings</a></li>
+            </ul>
+            <div class="navbar-actions">
+                <button class="btn btn-sm btn-primary">+ New Project</button>
+                <div class="user-menu">
+                    <div class="avatar">JD</div>
+                    <span>John Doe</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container main-content">
+        <div class="form-container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">Register New Incident</h1>
+                <p class="page-subtitle">Report an error or exception that occurred in your application</p>
+            </div>
+
+            <!-- Basic Information -->
+            <div class="form-section">
+                <h2 class="section-title">📝 Basic Information</h2>
+                
+                <div class="form-group">
+                    <label class="form-label" for="errorTitle">Error Title / Message *</label>
+                    <input 
+                        type="text" 
+                        id="errorTitle" 
+                        class="form-input" 
+                        placeholder="e.g., TypeError: Cannot read property 'map' of undefined"
+                        required
+                    />
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="project">Project *</label>
+                        <select id="project" class="form-select" required>
+                            <option value="">Select a project...</option>
+                            <option>E-Commerce Web App</option>
+                            <option>Mobile App iOS</option>
+                            <option>Android App</option>
+                            <option>Backend API</option>
+                            <option>Payment Gateway</option>
+                            <option>Admin Dashboard</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="environment">Environment *</label>
+                        <select id="environment" class="form-select" required>
+                            <option value="">Select environment...</option>
+                            <option>Production</option>
+                            <option>Staging</option>
+                            <option>Development</option>
+                            <option>Testing</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Severity Level *</label>
+                    <div class="severity-selector">
+                        <div class="severity-option">
+                            <input type="radio" name="severity" id="critical" value="critical" />
+                            <label for="critical" style="cursor: pointer;">
+                                <div class="severity-icon">🔴</div>
+                                <div style="font-weight: 600;">Critical</div>
+                                <div style="font-size: 0.75rem; color: #6b7280;">Urgent fix needed</div>
+                            </label>
+                        </div>
+
+                        <div class="severity-option">
+                            <input type="radio" name="severity" id="error" value="error" checked />
+                            <label for="error" style="cursor: pointer;">
+                                <div class="severity-icon">🔴</div>
+                                <div style="font-weight: 600;">Error</div>
+                                <div style="font-size: 0.75rem; color: #6b7280;">Needs attention</div>
+                            </label>
+                        </div>
+
+                        <div class="severity-option">
+                            <input type="radio" name="severity" id="warning" value="warning" />
+                            <label for="warning" style="cursor: pointer;">
+                                <div class="severity-icon">⚠️</div>
+                                <div style="font-weight: 600;">Warning</div>
+                                <div style="font-size: 0.75rem; color: #6b7280;">Monitor closely</div>
+                            </label>
+                        </div>
+
+                        <div class="severity-option">
+                            <input type="radio" name="severity" id="info" value="info" />
+                            <label for="info" style="cursor: pointer;">
+                                <div class="severity-icon">ℹ️</div>
+                                <div style="font-weight: 600;">Info</div>
+                                <div style="font-size: 0.75rem; color: #6b7280;">For reference</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Details -->
+            <div class="form-section">
+                <h2 class="section-title">🐛 Error Details</h2>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="errorFile">File / Component</label>
+                        <input 
+                            type="text" 
+                            id="errorFile" 
+                            class="form-input" 
+                            placeholder="e.g., ProductList.jsx"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="lineNumber">Line Number</label>
+                        <input 
+                            type="number" 
+                            id="lineNumber" 
+                            class="form-input" 
+                            placeholder="e.g., 45"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="stackTrace">Stack Trace *</label>
+                    <textarea 
+                        id="stackTrace" 
+                        class="code-editor"
+                        placeholder="Paste your stack trace here...
+
+Example:
+TypeError: Cannot read property 'map' of undefined
+    at ProductList.render (ProductList.jsx:45:12)
+    at finishClassComponent (react-dom.production.min.js:8891:31)
+    at updateClassComponent (react-dom.production.min.js:8856:24)"
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Or Upload Stack Trace File</label>
+                    <div class="file-upload-area">
+                        <div class="file-upload-icon">📄</div>
+                        <div style="font-weight: 600; margin-bottom: 0.25rem;">Click to upload or drag and drop</div>
+                        <div style="font-size: 0.875rem; color: #6b7280;">TXT, LOG files up to 10MB</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Context Information -->
+            <div class="form-section">
+                <h2 class="section-title">📋 Context Information</h2>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="url">URL / Route</label>
+                        <input 
+                            type="text" 
+                            id="url" 
+                            class="form-input" 
+                            placeholder="e.g., /products/category/electronics"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="userAgent">Browser / User Agent</label>
+                        <input 
+                            type="text" 
+                            id="userAgent" 
+                            class="form-input" 
+                            placeholder="e.g., Chrome 119.0.0.0"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="os">Operating System</label>
+                        <select id="os" class="form-select">
+                            <option value="">Select OS...</option>
+                            <option>Windows 10</option>
+                            <option>Windows 11</option>
+                            <option>macOS</option>
+                            <option>Linux</option>
+                            <option>iOS</option>
+                            <option>Android</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="userId">User ID (if available)</label>
+                        <input 
+                            type="text" 
+                            id="userId" 
+                            class="form-input" 
+                            placeholder="e.g., user_123456"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="additionalContext">Additional Context / Notes</label>
+                    <textarea 
+                        id="additionalContext" 
+                        class="form-textarea"
+                        placeholder="Any additional information that might help debug this error...
+
+Example:
+- Steps to reproduce
+- Expected vs actual behavior
+- Related issues or tickets"
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="tags">Tags (comma separated)</label>
+                    <input 
+                        type="text" 
+                        id="tags" 
+                        class="form-input" 
+                        placeholder="e.g., frontend, react, rendering, production"
+                    />
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-section">
+                <div class="flex gap-2" style="justify-content: flex-end;">
+                    <a href="errors.html" class="btn btn-outline">Cancel</a>
+                    <button type="button" class="btn btn-secondary">Save as Draft</button>
+                    <button type="submit" class="btn btn-primary">Register Incident</button>
+                </div>
+            </div>
+
+            <!-- Help Text -->
+            <div style="background: #f0f9ff; border-left: 4px solid #2563eb; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                <div style="display: flex; gap: 0.75rem;">
+                    <span style="font-size: 1.5rem;">💡</span>
+                    <div>
+                        <div style="font-weight: 600; color: #1e40af; margin-bottom: 0.25rem;">Tip: Use SDK for Automatic Registration</div>
+                        <div style="font-size: 0.875rem; color: #1e40af;">
+                            For automatic error tracking, integrate our SDK into your application. 
+                            Check <a href="settings.html" style="color: #2563eb; text-decoration: underline;">API Keys in Settings</a> for integration instructions.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+
