@@ -7,7 +7,13 @@
     <link rel="stylesheet" href="styles/common.css">
     <style>
         .main-content {
-            padding: 2rem 0;
+            padding: 1rem 0;
+            overflow-x: hidden;
+        }
+        
+        .container.main-content {
+            padding: 1rem;
+            overflow-x: hidden;
         }
 
         .settings-layout {
@@ -65,7 +71,7 @@
         .settings-section {
             background: white;
             border-radius: 12px;
-            padding: 2rem;
+            padding: 1rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
@@ -100,15 +106,15 @@
         }
 
         .profile-avatar-large {
-            width: 120px;
-            height: 120px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 3rem;
+            font-size: 2rem;
             font-weight: 600;
         }
 
@@ -461,7 +467,7 @@
 
                     <button class="btn btn-primary">Update Password</button>
 
-                    <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e5e7eb;">
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
                         <h3 style="font-weight: 600; margin-bottom: 0.5rem;">Two-Factor Authentication</h3>
                         <p class="text-muted text-sm mb-2">Add an extra layer of security to your account</p>
                         <button class="btn btn-secondary">Enable 2FA</button>
@@ -475,7 +481,7 @@
                         <p class="section-description">Manage team members and their roles in the organization</p>
                     </div>
 
-                    <div style="margin-bottom: 2rem;">
+                    <div style="margin-bottom: 1rem;">
                         <div class="flex-between mb-3">
                             <h3 style="font-weight: 600; font-size: 1rem;">Team Members</h3>
                             <button class="btn btn-primary btn-sm">+ Invite Member</button>
@@ -570,7 +576,7 @@
                     </div>
 
                     <!-- Role Descriptions -->
-                    <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e5e7eb;">
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
                         <h3 style="font-weight: 600; margin-bottom: 1rem;">Role Permissions</h3>
                         <div style="display: grid; gap: 1rem;">
                             <!-- Admin Role -->
@@ -619,7 +625,7 @@
                         <p class="section-description">Manage your API keys for integrating with your applications</p>
                     </div>
 
-                    <div style="margin-bottom: 2rem;">
+                    <div style="margin-bottom: 1rem;">
                         <label class="form-label">Production API Key</label>
                         <div class="api-key-display">
                             <span class="api-key-text">••••••••••••••••••••••••abcd1234</span>
@@ -628,7 +634,7 @@
                         </div>
                     </div>
 
-                    <div style="margin-bottom: 2rem;">
+                    <div style="margin-bottom: 1rem;">
                         <label class="form-label">Development API Key</label>
                         <div class="api-key-display">
                             <span class="api-key-text">••••••••••••••••••••••••efgh5678</span>
