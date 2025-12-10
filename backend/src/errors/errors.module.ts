@@ -11,7 +11,7 @@ import { AuthModule } from '../auth/auth.module';
   imports: [
     TypeOrmModule.forFeature([ErrorGroup, ErrorOccurrence]),
     forwardRef(() => ProjectsModule),
-    forwardRef(() => AuthModule),
+    AuthModule,
   ],
   controllers: [ErrorsController],
   providers: [ErrorsService],

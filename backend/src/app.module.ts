@@ -8,6 +8,10 @@ import { UsersModule } from './users/users.module';
 import { ProjectsModule } from './projects/projects.module';
 import { ErrorsModule } from './errors/errors.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { User } from './users/entities/user.entity';
+import { Project } from './projects/entities/project.entity';
+import { ErrorGroup } from './errors/entities/error-group.entity';
+import { ErrorOccurrence } from './errors/entities/error-occurrence.entity';
 
 @Module({
   imports: [
@@ -28,7 +32,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
         username: configService.get('DATABASE_USER', 'admin'),
         password: configService.get('DATABASE_PASSWORD', 'admin123'),
         database: configService.get('DATABASE_NAME', 'error_management'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        entities: [User, Project, ErrorGroup, ErrorOccurrence],
         synchronize: configService.get('NODE_ENV') !== 'production',
         logging: configService.get('NODE_ENV') === 'development',
       }),

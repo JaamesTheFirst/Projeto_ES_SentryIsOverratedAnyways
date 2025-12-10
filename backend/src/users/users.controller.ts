@@ -22,9 +22,14 @@ export class UsersController {
 
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
-    const user = await this.usersService.create(createUserDto);
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    try {
+      const user = await this.usersService.create(createUserDto);
+      const { password, ...userWithoutPassword } = user;
+      return userWithoutPassword;
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    }
   }
 
   @Post('login')
