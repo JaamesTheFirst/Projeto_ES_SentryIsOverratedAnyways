@@ -1,7 +1,31 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import styles from './LoginPage.module.css';
 
 export const LoginPage = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      await login(email, password);
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Invalid email or password');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className={styles.loginContainer}>
       <div className={styles.loginCard}>
@@ -11,7 +35,13 @@ export const LoginPage = () => {
           <p>Sign in to Error Management Platform</p>
         </div>
 
-        <form>
+        {error && (
+          <div style={{ padding: '0.75rem', background: '#fee2e2', color: '#dc2626', borderRadius: '0.5rem', marginBottom: '1rem' }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
             <label className={styles.formLabel} htmlFor="email">
               Email Address
@@ -21,7 +51,10 @@ export const LoginPage = () => {
               id="email"
               className={styles.formInput}
               placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
 
@@ -34,7 +67,10 @@ export const LoginPage = () => {
               id="password"
               className={styles.formInput}
               placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
 
@@ -50,8 +86,13 @@ export const LoginPage = () => {
             </a>
           </div>
 
-          <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`} style={{ width: '100%' }}>
-            Sign In
+          <button 
+            type="submit" 
+            className={`${styles.btn} ${styles.btnPrimary}`} 
+            style={{ width: '100%' }}
+            disabled={loading}
+          >
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 

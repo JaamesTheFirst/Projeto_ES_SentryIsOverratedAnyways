@@ -1,8 +1,43 @@
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { dashboardService } from '../services/dashboard.service';
 import styles from './DashboardPage.module.css';
 import '../styles/common.css';
 
 export const DashboardPage = () => {
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ['dashboard-stats'],
+    queryFn: () => dashboardService.getStats(),
+  });
+
+  if (isLoading) {
+    return (
+      <main className={`${styles.container} ${styles.mainContent}`}>
+        <div>Loading dashboard...</div>
+      </main>
+    );
+  }
+
+  const recentErrors = stats?.recentErrors || [];
+  const totalErrors = stats?.totalErrors || 0;
+  const unresolved = stats?.unresolved || 0;
+  const resolved = stats?.resolved || 0;
+  const activeProjects = stats?.activeProjects || 0;
+
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'just now';
+    if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+  };
+
   return (
     <main className={`${styles.container} ${styles.mainContent}`}>
       <div className={styles.pageHeader}>
@@ -20,45 +55,41 @@ export const DashboardPage = () => {
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div>
-              <div className={styles.statValue}>1,247</div>
+              <div className={styles.statValue}>{totalErrors.toLocaleString()}</div>
               <div className={styles.statLabel}>Total Errors</div>
             </div>
             <div className={`${styles.statIcon} ${styles.error}`}>🐛</div>
           </div>
-          <div className={`${styles.statTrend} ${styles.up}`}>↑ 12% from last week</div>
         </div>
 
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div>
-              <div className={styles.statValue}>384</div>
+              <div className={styles.statValue}>{unresolved.toLocaleString()}</div>
               <div className={styles.statLabel}>Unresolved</div>
             </div>
             <div className={`${styles.statIcon} ${styles.warning}`}>⚠️</div>
           </div>
-          <div className={`${styles.statTrend} ${styles.up}`}>↑ 5% from last week</div>
         </div>
 
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div>
-              <div className={styles.statValue}>863</div>
+              <div className={styles.statValue}>{resolved.toLocaleString()}</div>
               <div className={styles.statLabel}>Resolved</div>
             </div>
             <div className={`${styles.statIcon} ${styles.success}`}>✅</div>
           </div>
-          <div className={`${styles.statTrend} ${styles.down}`}>↓ 3% from last week</div>
         </div>
 
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div>
-              <div className={styles.statValue}>12</div>
+              <div className={styles.statValue}>{activeProjects}</div>
               <div className={styles.statLabel}>Active Projects</div>
             </div>
             <div className={`${styles.statIcon} ${styles.info}`}>📁</div>
           </div>
-          <div className={styles.statTrend} style={{ color: '#6b7280' }}>No change</div>
         </div>
       </div>
 
@@ -88,80 +119,46 @@ export const DashboardPage = () => {
           </Link>
         </div>
         <div>
-          <div className={styles.errorItem}>
-            <div className={styles.errorInfo}>
-              <div className={styles.errorTitle}>TypeError: Cannot read property 'map' of undefined</div>
-              <div className={styles.errorMeta}>
-                <span>🚀 <strong>Web App</strong></span>
-                <span>📁 <strong>ProductList.jsx:45</strong></span>
-                <span>🕐 <strong>5 minutes ago</strong></span>
-              </div>
+          {recentErrors.length === 0 ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
+              No errors yet
             </div>
-            <div className={`${styles.flex} ${styles.gap2}`} style={{ alignItems: 'center' }}>
-              <span className={`${styles.badge} ${styles.badgeError}`}>Critical</span>
-              <span className={styles.errorCount}>127 events</span>
-            </div>
-          </div>
-
-          <div className={styles.errorItem}>
-            <div className={styles.errorInfo}>
-              <div className={styles.errorTitle}>ReferenceError: fetch is not defined</div>
-              <div className={styles.errorMeta}>
-                <span>🚀 <strong>API Service</strong></span>
-                <span>📁 <strong>api.service.ts:89</strong></span>
-                <span>🕐 <strong>1 hour ago</strong></span>
-              </div>
-            </div>
-            <div className={`${styles.flex} ${styles.gap2}`} style={{ alignItems: 'center' }}>
-              <span className={`${styles.badge} ${styles.badgeWarning}`}>Warning</span>
-              <span className={styles.errorCount}>43 events</span>
-            </div>
-          </div>
-
-          <div className={styles.errorItem}>
-            <div className={styles.errorInfo}>
-              <div className={styles.errorTitle}>Network Error: Request timeout</div>
-              <div className={styles.errorMeta}>
-                <span>🚀 <strong>Mobile App</strong></span>
-                <span>📁 <strong>NetworkManager.swift:234</strong></span>
-                <span>🕐 <strong>3 hours ago</strong></span>
-              </div>
-            </div>
-            <div className={`${styles.flex} ${styles.gap2}`} style={{ alignItems: 'center' }}>
-              <span className={`${styles.badge} ${styles.badgeWarning}`}>Warning</span>
-              <span className={styles.errorCount}>89 events</span>
-            </div>
-          </div>
-
-          <div className={styles.errorItem}>
-            <div className={styles.errorInfo}>
-              <div className={styles.errorTitle}>Database Connection Failed</div>
-              <div className={styles.errorMeta}>
-                <span>🚀 <strong>Backend API</strong></span>
-                <span>📁 <strong>database.ts:12</strong></span>
-                <span>🕐 <strong>5 hours ago</strong></span>
-              </div>
-            </div>
-            <div className={`${styles.flex} ${styles.gap2}`} style={{ alignItems: 'center' }}>
-              <span className={`${styles.badge} ${styles.badgeError}`}>Critical</span>
-              <span className={styles.errorCount}>234 events</span>
-            </div>
-          </div>
-
-          <div className={styles.errorItem}>
-            <div className={styles.errorInfo}>
-              <div className={styles.errorTitle}>Validation Error: Invalid email format</div>
-              <div className={styles.errorMeta}>
-                <span>🚀 <strong>Web App</strong></span>
-                <span>📁 <strong>LoginForm.tsx:67</strong></span>
-                <span>🕐 <strong>1 day ago</strong></span>
-              </div>
-            </div>
-            <div className={`${styles.flex} ${styles.gap2}`} style={{ alignItems: 'center' }}>
-              <span className={`${styles.badge} ${styles.badgeInfo}`}>Info</span>
-              <span className={styles.errorCount}>12 events</span>
-            </div>
-          </div>
+          ) : (
+            recentErrors.map((error) => (
+              <Link
+                key={error.id}
+                to={`/error-detail/${error.id}`}
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                <div className={styles.errorItem}>
+                  <div className={styles.errorInfo}>
+                    <div className={styles.errorTitle}>
+                      {error.errorType}: {error.normalizedMessage}
+                    </div>
+                    <div className={styles.errorMeta}>
+                      {error.project && <span>🚀 <strong>{error.project.name}</strong></span>}
+                      {error.file && <span>📁 <strong>{error.file}{error.line ? `:${error.line}` : ''}</strong></span>}
+                      <span>🕐 <strong>{formatTimeAgo(error.lastSeenAt)}</strong></span>
+                    </div>
+                  </div>
+                  <div className={`${styles.flex} ${styles.gap2}`} style={{ alignItems: 'center' }}>
+                    <span
+                      className={`${styles.badge} ${
+                        error.severity === 'critical' || error.severity === 'error'
+                          ? styles.badgeError
+                          : error.severity === 'warning'
+                          ? styles.badgeWarning
+                          : styles.badgeInfo
+                      }`}
+                    >
+                      {error.severity.charAt(0).toUpperCase() + error.severity.slice(1)}
+                    </span>
+                    <span className={styles.errorCount}>{error.occurrenceCount} events</span>
+                  </div>
+                </div>
+              </Link>
+            ))
+          )}
         </div>
       </div>
     </main>

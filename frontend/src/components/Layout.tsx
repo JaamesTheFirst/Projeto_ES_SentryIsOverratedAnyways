@@ -1,4 +1,5 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import styles from './Layout.module.css';
 
 interface LayoutProps {
@@ -7,14 +8,20 @@ interface LayoutProps {
 
 export const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const isHomePage = location.pathname === '/';
+
+  const getInitials = (firstName: string, lastName: string) => {
+    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+  };
 
   return (
     <>
       {!isHomePage && (
         <nav className={styles.navbar}>
           <div className={`${styles.container} ${styles.navbarContent}`}>
-            <Link to="/" className={styles.navbarBrand}>
+            <Link to="/dashboard" className={styles.navbarBrand}>
               <span>🚀</span>
               <span>Error Management</span>
             </Link>
@@ -38,7 +45,7 @@ export const Layout = ({ children }: LayoutProps) => {
               <li>
                 <Link
                   to="/errors"
-                  className={location.pathname === '/errors' || location.pathname === '/error-detail' ? styles.active : ''}
+                  className={location.pathname === '/errors' || location.pathname.startsWith('/error-detail') ? styles.active : ''}
                 >
                   Errors
                 </Link>
@@ -56,10 +63,30 @@ export const Layout = ({ children }: LayoutProps) => {
               <Link to="/register-incident" className={`${styles.btn} ${styles.btnSm} ${styles.btnSecondary}`}>
                 + Report Error
               </Link>
-              <button className={`${styles.btn} ${styles.btnSm} ${styles.btnPrimary}`}>+ New Project</button>
+              <button
+                className={`${styles.btn} ${styles.btnSm} ${styles.btnPrimary}`}
+                onClick={() => navigate('/projects')}
+              >
+                + New Project
+              </button>
               <div className={styles.userMenu}>
-                <div className={styles.avatar}>JD</div>
-                <span>John Doe</span>
+                <div className={styles.avatar}>
+                  {user ? getInitials(user.firstName, user.lastName) : 'U'}
+                </div>
+                <span>{user ? `${user.firstName} ${user.lastName}` : 'User'}</span>
+                <button
+                  onClick={logout}
+                  style={{
+                    marginLeft: '0.5rem',
+                    padding: '0.25rem 0.5rem',
+                    background: 'transparent',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '0.25rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Logout
+                </button>
               </div>
             </div>
           </div>
