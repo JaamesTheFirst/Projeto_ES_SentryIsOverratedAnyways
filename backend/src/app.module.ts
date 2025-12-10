@@ -3,6 +3,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { ProjectsModule } from './projects/projects.module';
+import { ErrorsModule } from './errors/errors.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -28,6 +33,13 @@ import { AppService } from './app.service';
         logging: configService.get('NODE_ENV') === 'development',
       }),
     }),
+
+    // Feature modules
+    AuthModule,
+    UsersModule,
+    ProjectsModule,
+    ErrorsModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],
