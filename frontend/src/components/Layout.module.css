@@ -1,6 +1,6 @@
 /* Navigation */
 .navbar {
-  background: white;
+  background: var(--bg-primary);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   padding: 1rem 0;
   position: sticky;
@@ -11,6 +11,11 @@
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   contain: layout style paint;
+  transition: background-color 0.3s ease;
+}
+
+.dark .navbar {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .container {
@@ -48,7 +53,7 @@
 
 .navbarMenu a {
   text-decoration: none;
-  color: #555;
+  color: var(--text-primary);
   font-weight: 500;
   transition: color 0.3s;
 }
@@ -69,7 +74,7 @@
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  color: #1f2937;
+  color: var(--text-primary);
   font-weight: 500;
 }
 

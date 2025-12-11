@@ -1,8 +1,9 @@
 .mainContent {
   padding: 1rem 0;
   overflow-x: hidden;
-  background-color: #f5f7fa;
+  background-color: var(--bg-secondary);
   min-height: 100vh;
+  transition: background-color 0.3s ease;
 }
 
 .container.mainContent {
@@ -17,12 +18,12 @@
 .pageTitle {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
 
 .pageSubtitle {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -42,14 +43,15 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  background: white;
+  background: var(--surface-color);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px var(--shadow);
   overflow: hidden;
+  transition: background-color 0.3s ease;
 }
 
 .settingsMenuItem {
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .settingsMenuItem:last-child {
@@ -61,19 +63,19 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   text-decoration: none;
   transition: all 0.2s;
 }
 
 .settingsMenuLink:hover {
-  background: #f9fafb;
-  color: #667eea;
+  background: var(--bg-secondary);
+  color: var(--primary-color);
 }
 
 .settingsMenuLink.active {
-  background: #f5f7ff;
-  color: #667eea;
+  background: var(--bg-secondary);
+  color: var(--primary-color);
   font-weight: 600;
 }
 
@@ -84,10 +86,11 @@
 }
 
 .settingsSection {
-  background: white;
+  background: var(--surface-color);
   border-radius: 12px;
   padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: background-color 0.3s ease;
 }
 
 .sectionHeader {
@@ -97,12 +100,12 @@
 .sectionHeader h2 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
 
 .sectionDescription {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -122,7 +125,7 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -149,7 +152,7 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--text-primary);
   font-size: 0.875rem;
 }
 
@@ -157,17 +160,19 @@
 .formTextarea {
   width: 100%;
   padding: 0.6rem 0.8rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 0.875rem;
   transition: all 0.3s;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .formInput:focus,
 .formTextarea:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .formTextarea {
@@ -180,7 +185,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .notificationItem:last-child {
@@ -190,13 +195,13 @@
 .notificationInfo h3 {
   font-size: 1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
 
 .notificationInfo p {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .toggleSwitch {
@@ -219,7 +224,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #e5e7eb;
+  background-color: var(--border-color);
   transition: 0.3s;
   border-radius: 24px;
 }
@@ -231,13 +236,13 @@
   width: 18px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
+  background-color: var(--bg-primary);
   transition: 0.3s;
   border-radius: 50%;
 }
 
 .toggleSwitch input:checked + .toggleSlider {
-  background-color: #667eea;
+  background-color: var(--primary-color);
 }
 
 .toggleSwitch input:checked + .toggleSlider:before {
@@ -261,23 +266,23 @@
 }
 
 .btnPrimary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
   color: white;
 }
 
 .btnPrimary:hover {
   transform: translateY(-2px) translateZ(0);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
 }
 
 .btnOutline {
   background: transparent;
-  border: 2px solid #667eea;
-  color: #667eea;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
 }
 
 .btnOutline:hover {
-  background: #667eea;
+  background: var(--primary-color);
   color: white;
 }
 

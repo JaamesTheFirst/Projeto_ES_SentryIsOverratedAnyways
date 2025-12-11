@@ -1,8 +1,9 @@
 .mainContent {
   padding: 1rem 0;
   overflow-x: hidden;
-  background-color: #f5f7fa;
+  background-color: var(--bg-secondary);
   min-height: 100vh;
+  transition: background-color 0.3s ease;
 }
 
 .container.mainContent {
@@ -11,11 +12,12 @@
 }
 
 .filtersSection {
-  background: white;
+  background: var(--surface-color);
   border-radius: 12px;
   padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px var(--shadow);
   margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
 }
 
 .filtersRow {
@@ -34,9 +36,18 @@
 .searchBox input {
   width: 100%;
   padding: 0.75rem 1rem 0.75rem 2.5rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 0.875rem;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.searchBox input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .searchIcon {
@@ -44,7 +55,7 @@
   left: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #9ca3af;
+  color: var(--text-secondary);
 }
 
 .filterChips {
@@ -59,33 +70,37 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: #f3f4f6;
+  background: var(--bg-secondary);
   border-radius: 20px;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
 }
 
 .chip:hover {
-  background: #e5e7eb;
+  background: var(--surface-color);
 }
 
 .chip.active {
-  background: #667eea;
+  background: var(--primary-color);
   color: white;
+  border-color: var(--primary-color);
 }
 
 .errorsTable {
-  background: white;
+  background: var(--surface-color);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px var(--shadow);
   overflow: hidden;
+  transition: background-color 0.3s ease;
 }
 
 .tableHeader {
   padding: 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -93,7 +108,7 @@
 
 .errorRow {
   padding: 1.5rem;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--border-color);
   display: grid;
   grid-template-columns: 40px 1fr auto auto;
   gap: 1.5rem;
@@ -103,7 +118,7 @@
 }
 
 .errorRow:hover {
-  background: #f9fafb;
+  background: var(--bg-secondary);
 }
 
 .errorRow:last-child {
@@ -135,7 +150,7 @@
 
 .errorTitleText {
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 1rem;
 }
 
@@ -143,7 +158,7 @@
   display: flex;
   gap: 1.5rem;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   flex-wrap: wrap;
 }
 
@@ -154,23 +169,24 @@
 }
 
 .errorCountBadge {
-  background: #f3f4f6;
+  background: var(--bg-secondary);
   padding: 0.5rem 1rem;
   border-radius: 8px;
   text-align: center;
+  border: 1px solid var(--border-color);
 }
 
 .errorCountNumber {
   display: block;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .errorCountLabel {
   display: block;
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .pagination {
@@ -178,14 +194,15 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  background: white;
+  background: var(--surface-color);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px var(--shadow);
   margin-top: 1.5rem;
+  transition: background-color 0.3s ease;
 }
 
 .paginationInfo {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -200,22 +217,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   border-radius: 6px;
-  background: white;
+  background: var(--bg-primary);
   cursor: pointer;
   font-weight: 500;
   transition: all 0.2s;
+  color: var(--text-primary);
 }
 
 .pageBtn:hover {
-  border-color: #667eea;
-  color: #667eea;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .pageBtn.active {
-  background: #667eea;
-  border-color: #667eea;
+  background: var(--primary-color);
+  border-color: var(--primary-color);
   color: white;
 }
 
@@ -234,12 +252,12 @@
 .pageTitle {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
 
 .pageSubtitle {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -260,22 +278,23 @@
 }
 
 .btnSecondary {
-  background: #e0e7ff;
-  color: #667eea;
+  background: var(--bg-secondary);
+  color: var(--primary-color);
+  border: 1px solid var(--border-color);
 }
 
 .btnSecondary:hover {
-  background: #c7d2fe;
+  background: var(--surface-color);
 }
 
 .btnOutline {
   background: transparent;
-  border: 2px solid #667eea;
-  color: #667eea;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
 }
 
 .btnOutline:hover {
-  background: #667eea;
+  background: var(--primary-color);
   color: white;
 }
 
@@ -286,10 +305,18 @@
 
 .formSelect {
   padding: 0.6rem 0.8rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 0.875rem;
-  background: white;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.formSelect:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .flex {
@@ -305,7 +332,7 @@
 }
 
 .textMuted {
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .badge {
@@ -317,18 +344,30 @@
 }
 
 .badgeError {
-  background: #fee2e2;
-  color: #dc2626;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error-color);
+}
+
+.dark .badgeError {
+  background: rgba(239, 68, 68, 0.2);
 }
 
 .badgeWarning {
-  background: #fef3c7;
-  color: #d97706;
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning-color);
+}
+
+.dark .badgeWarning {
+  background: rgba(245, 158, 11, 0.2);
 }
 
 .badgeInfo {
-  background: #dbeafe;
-  color: #2563eb;
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--info-color);
+}
+
+.dark .badgeInfo {
+  background: rgba(59, 130, 246, 0.2);
 }
 
 .container {

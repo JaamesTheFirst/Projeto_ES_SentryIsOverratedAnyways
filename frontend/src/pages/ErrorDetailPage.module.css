@@ -1,8 +1,9 @@
 .mainContent {
   padding: 1rem 0;
   overflow-x: hidden;
-  background-color: #f5f7fa;
+  background-color: var(--bg-secondary);
   min-height: 100vh;
+  transition: background-color 0.3s ease;
 }
 
 .container.mainContent {
@@ -19,7 +20,7 @@
 }
 
 .breadcrumb a {
-  color: #667eea;
+  color: var(--primary-color);
   text-decoration: none;
 }
 
@@ -28,15 +29,16 @@
 }
 
 .breadcrumbSeparator {
-  color: #9ca3af;
+  color: var(--text-secondary);
 }
 
 .errorHeader {
-  background: white;
+  background: var(--surface-color);
   border-radius: 12px;
   padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px var(--shadow);
   margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
 }
 
 .errorTitleSection {
@@ -52,7 +54,7 @@
 
 .errorTitleMain h1 {
   font-size: 1.25rem;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
 
@@ -66,7 +68,7 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border-color);
 }
 
 .metaItem {
@@ -77,7 +79,7 @@
 
 .metaLabel {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
@@ -85,7 +87,7 @@
 
 .metaValue {
   font-size: 1rem;
-  color: #1f2937;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
@@ -108,28 +110,35 @@
 }
 
 .sectionCard {
-  background: white;
+  background: var(--surface-color);
   border-radius: 12px;
   padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: background-color 0.3s ease;
 }
 
 .sectionTitle {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 1rem;
 }
 
 .stackTrace {
-  background: #1f2937;
-  color: #f9fafb;
+  background: var(--surface-color);
+  color: var(--text-primary);
   padding: 1rem;
   border-radius: 8px;
   font-family: 'Courier New', monospace;
   font-size: 0.875rem;
   line-height: 1.6;
   overflow-x: auto;
+  border: 1px solid var(--border-color);
+}
+
+.dark .stackTrace {
+  background: #0f172a;
+  color: #f1f5f9;
 }
 
 .stackTraceLine {
@@ -159,7 +168,7 @@
   display: flex;
   gap: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .timelineItem:last-child {
@@ -170,7 +179,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #f3f4f6;
+  background: var(--bg-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -183,26 +192,27 @@
 
 .timelineTitle {
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
 
 .timelineMeta {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .occurrenceChart {
   height: 200px;
-  background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+  background: var(--bg-secondary);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-weight: 500;
   font-size: 0.875rem;
+  border: 1px solid var(--border-color);
 }
 
 .affectedUsers {
@@ -216,15 +226,16 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.5rem;
-  background: #f9fafb;
+  background: var(--bg-secondary);
   border-radius: 8px;
+  border: 1px solid var(--border-color);
 }
 
 .userAvatar {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -239,32 +250,32 @@
 
 .userName {
   font-weight: 500;
-  color: #1f2937;
+  color: var(--text-primary);
   font-size: 0.875rem;
 }
 
 .userEmail {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .userCount {
   font-weight: 600;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
 .tabs {
   display: flex;
   gap: 0.5rem;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid var(--border-color);
   margin-bottom: 1.5rem;
 }
 
 .tab {
   padding: 0.75rem 1rem;
   font-weight: 500;
-  color: #6b7280;
+  color: var(--text-secondary);
   cursor: pointer;
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
@@ -272,20 +283,22 @@
 }
 
 .tab:hover {
-  color: #667eea;
+  color: var(--primary-color);
 }
 
 .tab.active {
-  color: #667eea;
-  border-bottom-color: #667eea;
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
 }
 
 .contextData {
-  background: #f9fafb;
+  background: var(--bg-secondary);
   padding: 1rem;
   border-radius: 8px;
   font-family: 'Courier New', monospace;
   font-size: 0.875rem;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
 }
 
 .btn {
@@ -305,32 +318,32 @@
 }
 
 .btnSuccess {
-  background: #10b981;
+  background: var(--success-color);
   color: white;
 }
 
 .btnSuccess:hover {
-  background: #059669;
+  opacity: 0.9;
 }
 
 .btnOutline {
   background: transparent;
-  border: 2px solid #667eea;
-  color: #667eea;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
 }
 
 .btnOutline:hover {
-  background: #667eea;
+  background: var(--primary-color);
   color: white;
 }
 
 .btnDanger {
-  background: #ef4444;
+  background: var(--error-color);
   color: white;
 }
 
 .btnDanger:hover {
-  background: #dc2626;
+  opacity: 0.9;
 }
 
 .btnSm {

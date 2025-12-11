@@ -21,7 +21,7 @@ export const Layout = ({ children }: LayoutProps) => {
       {!isHomePage && (
         <nav className={styles.navbar}>
           <div className={`${styles.container} ${styles.navbarContent}`}>
-            <Link to="/dashboard" className={styles.navbarBrand}>
+            <Link to="/" className={styles.navbarBrand}>
               <span>🚀</span>
               <span>Error Management</span>
             </Link>

@@ -1,8 +1,11 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import styles from './HomePage.module.css';
 
 export const HomePage = () => {
   const techStack = ['TypeScript', 'React', 'Vite', 'NestJS', 'PostgreSQL', 'Docker'];
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className={styles.container}>
@@ -15,7 +18,9 @@ export const HomePage = () => {
         <div className={styles.card}>
           <div className={styles.cardContentWrapper}>
             <div className={styles.cardContent}>
-              <h2>Welcome to Your Error Management Dashboard</h2>
+              <h2>
+                {user ? `Welcome back, ${user.firstName}!` : 'Welcome to Your Error Management Dashboard'}
+              </h2>
               <p>This is a modern error tracking and monitoring platform built with:</p>
               <div className={styles.techStack}>
                 {techStack.map((tech) => (
@@ -25,9 +30,19 @@ export const HomePage = () => {
                 ))}
               </div>
             </div>
-            <Link to="/login" className={styles.loginLink}>
-              <span>🔐</span> View Login Page
-            </Link>
+            {!loading && (
+              <>
+                {user ? (
+                  <Link to="/dashboard" className={styles.loginLink}>
+                    <span>📊</span> Go to Dashboard
+                  </Link>
+                ) : (
+                  <Link to="/login" className={styles.loginLink}>
+                    <span>🔐</span> Sign In
+                  </Link>
+                )}
+              </>
+            )}
           </div>
         </div>
 
@@ -37,47 +52,48 @@ export const HomePage = () => {
         </div>
 
         <div className={styles.mockupsGrid}>
-          <Link to="/dashboard" className={styles.mockupCard}>
-            <h3>
-              <span className={styles.mockupIcon}>📊</span> Dashboard
-            </h3>
-            <p>Main overview with statistics, charts, and recent errors</p>
-          </Link>
+          {user ? (
+            <>
+              <Link to="/dashboard" className={styles.mockupCard}>
+                <h3>
+                  <span className={styles.mockupIcon}>📊</span> Dashboard
+                </h3>
+                <p>Main overview with statistics, charts, and recent errors</p>
+              </Link>
 
-          <Link to="/projects" className={styles.mockupCard}>
-            <h3>
-              <span className={styles.mockupIcon}>📁</span> Projects
-            </h3>
-            <p>List of all projects with error counts and status</p>
-          </Link>
+              <Link to="/projects" className={styles.mockupCard}>
+                <h3>
+                  <span className={styles.mockupIcon}>📁</span> Projects
+                </h3>
+                <p>List of all projects with error counts and status</p>
+              </Link>
 
-          <Link to="/errors" className={styles.mockupCard}>
-            <h3>
-              <span className={styles.mockupIcon}>🐛</span> Errors List
-            </h3>
-            <p>Filterable and sortable list of errors with details</p>
-          </Link>
+              <Link to="/errors" className={styles.mockupCard}>
+                <h3>
+                  <span className={styles.mockupIcon}>🐛</span> Errors List
+                </h3>
+                <p>Filterable and sortable list of errors with details</p>
+              </Link>
 
-          <Link to="/error-detail" className={styles.mockupCard}>
-            <h3>
-              <span className={styles.mockupIcon}>🔍</span> Error Detail
-            </h3>
-            <p>Detailed view of a single error with stack trace</p>
-          </Link>
+              <Link to="/register-incident" className={styles.mockupCard}>
+                <h3>
+                  <span className={styles.mockupIcon}>📝</span> Register Incident
+                </h3>
+                <p>Form to manually report and register new errors</p>
+              </Link>
 
-          <Link to="/register-incident" className={styles.mockupCard}>
-            <h3>
-              <span className={styles.mockupIcon}>📝</span> Register Incident
-            </h3>
-            <p>Form to manually report and register new errors</p>
-          </Link>
-
-          <Link to="/settings" className={styles.mockupCard}>
-            <h3>
-              <span className={styles.mockupIcon}>⚙️</span> Settings
-            </h3>
-            <p>User profile, team management, and application settings</p>
-          </Link>
+              <Link to="/settings" className={styles.mockupCard}>
+                <h3>
+                  <span className={styles.mockupIcon}>⚙️</span> Settings
+                </h3>
+                <p>User profile, team management, and application settings</p>
+              </Link>
+            </>
+          ) : (
+            <div style={{ gridColumn: '1 / -1', padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
+              Please sign in to access the application features
+            </div>
+          )}
         </div>
       </main>
 

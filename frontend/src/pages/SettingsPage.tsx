@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { authService } from '../services/auth.service';
 import styles from './SettingsPage.module.css';
 import '../styles/common.css';
 
 export const SettingsPage = () => {
   const { user, updateUser } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const queryClient = useQueryClient();
   const [profileData, setProfileData] = useState({
     firstName: user?.firstName || '',
@@ -108,10 +110,35 @@ export const SettingsPage = () => {
                 <span>Security</span>
               </a>
             </li>
+            <li className={styles.settingsMenuItem}>
+              <a href="#appearance" className={styles.settingsMenuLink}>
+                <span>🎨</span>
+                <span>Appearance</span>
+              </a>
+            </li>
           </ul>
         </aside>
 
         <div className={styles.settingsContent}>
+          <section className={styles.settingsSection} id="appearance">
+            <div className={styles.sectionHeader}>
+              <h2>Appearance</h2>
+              <p className={styles.sectionDescription}>Customize the look and feel of the application</p>
+            </div>
+
+            <div>
+              <div className={styles.notificationItem}>
+                <div className={styles.notificationInfo}>
+                  <h3>Dark Mode</h3>
+                  <p>Toggle between light and dark theme</p>
+                </div>
+                <label className={styles.toggleSwitch}>
+                  <input type="checkbox" checked={theme === 'dark'} onChange={toggleTheme} />
+                  <span className={styles.toggleSlider}></span>
+                </label>
+              </div>
+            </div>
+          </section>
           <section className={styles.settingsSection} id="profile">
             <div className={styles.sectionHeader}>
               <h2>Profile Settings</h2>

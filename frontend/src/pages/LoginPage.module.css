@@ -13,10 +13,11 @@
 }
 
 .loginCard {
-  background: white;
+  background: var(--bg-primary);
   border-radius: 16px;
   padding: 1.5rem;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease;
 }
 
 .loginHeader {
@@ -31,12 +32,12 @@
 
 .loginHeader h1 {
   font-size: 1.25rem;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
 
 .loginHeader p {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -48,17 +49,19 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--text-primary);
   font-size: 0.875rem;
 }
 
 .formInput {
   width: 100%;
   padding: 0.6rem 0.8rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 0.875rem;
   transition: all 0.3s;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .formInput:focus {
@@ -119,12 +122,12 @@
 .divider::after {
   content: '';
   flex: 1;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .divider span {
   padding: 0 1rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -137,13 +140,14 @@
 .socialBtn {
   flex: 1;
   padding: 0.6rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
-  background: white;
+  background: var(--bg-secondary);
   cursor: pointer;
   font-weight: 500;
   font-size: 0.875rem;
   transition: all 0.3s;
+  color: var(--text-primary);
 }
 
 .socialBtn:hover {

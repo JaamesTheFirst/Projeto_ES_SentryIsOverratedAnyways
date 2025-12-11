@@ -1,8 +1,9 @@
 .mainContent {
   padding: 1rem 0;
   overflow-x: hidden;
-  background-color: #f5f7fa;
+  background-color: var(--bg-secondary);
   min-height: 100vh;
+  transition: background-color 0.3s ease;
 }
 
 .container.mainContent {
@@ -18,11 +19,11 @@
 }
 
 .projectCard {
-  background: white;
+  background: var(--surface-color);
   border-radius: 12px;
   padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
   cursor: pointer;
   border: 2px solid transparent;
   transform: translateZ(0);
@@ -32,8 +33,8 @@
 
 .projectCard:hover {
   transform: translateY(-4px) translateZ(0);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
-  border-color: #667eea;
+  box-shadow: 0 8px 16px var(--shadow-hover);
+  border-color: var(--primary-color);
 }
 
 .projectHeader {
@@ -47,7 +48,7 @@
   width: 36px;
   height: 36px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -58,12 +59,12 @@
 .projectTitle {
   font-size: 1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
 
 .projectDescription {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.875rem;
   line-height: 1.5;
   margin-bottom: 1rem;
@@ -74,7 +75,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--border-color);
 }
 
 .projectStat {
@@ -84,12 +85,12 @@
 .projectStatValue {
   font-size: 1rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .projectStatLabel {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -100,24 +101,25 @@
   align-items: center;
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--border-color);
 }
 
 .projectMeta {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .filtersBar {
-  background: white;
+  background: var(--surface-color);
   border-radius: 12px;
   padding: 1rem 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px var(--shadow);
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
   align-items: center;
   margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
 }
 
 .filterGroup {
@@ -135,9 +137,18 @@
 .searchBox input {
   width: 100%;
   padding: 0.5rem 1rem 0.5rem 2.5rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 0.875rem;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.searchBox input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .searchIcon {
@@ -145,7 +156,7 @@
   left: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #9ca3af;
+  color: var(--text-secondary);
 }
 
 .pageHeader {
@@ -158,12 +169,12 @@
 .pageTitle {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
 
 .pageSubtitle {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -184,23 +195,23 @@
 }
 
 .btnPrimary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
   color: white;
 }
 
 .btnPrimary:hover {
   transform: translateY(-2px) translateZ(0);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
 }
 
 .btnOutline {
   background: transparent;
-  border: 2px solid #667eea;
-  color: #667eea;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
 }
 
 .btnOutline:hover {
-  background: #667eea;
+  background: var(--primary-color);
   color: white;
 }
 
@@ -211,10 +222,18 @@
 
 .formSelect {
   padding: 0.6rem 0.8rem;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 0.875rem;
-  background: white;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.formSelect:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .flex {
@@ -230,7 +249,7 @@
 }
 
 .textMuted {
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .statusDotActive {
@@ -238,7 +257,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #10b981;
+  background: var(--success-color);
   margin-right: 0.5rem;
 }
 
@@ -247,7 +266,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #f59e0b;
+  background: var(--warning-color);
   margin-right: 0.5rem;
 }
 
@@ -259,4 +278,3 @@
   transform: translateZ(0);
   contain: layout style;
 }
-
