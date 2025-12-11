@@ -36,7 +36,7 @@ export const LoginPage = () => {
         </div>
 
         {error && (
-          <div style={{ padding: '0.75rem', background: '#fee2e2', color: '#dc2626', borderRadius: '0.5rem', marginBottom: '1rem' }}>
+          <div className={styles.errorMessage}>
             {error}
           </div>
         )}
@@ -81,15 +81,14 @@ export const LoginPage = () => {
                 Remember me
               </label>
             </div>
-            <a href="#" className={styles.textSm} style={{ color: '#667eea', textDecoration: 'none' }}>
+            <a href="#" className={`${styles.textSm} ${styles.forgotPassword}`}>
               Forgot password?
             </a>
           </div>
 
           <button 
             type="submit" 
-            className={`${styles.btn} ${styles.btnPrimary}`} 
-            style={{ width: '100%' }}
+            className={`${styles.btn} ${styles.btnPrimary}`}
             disabled={loading}
           >
             {loading ? 'Signing in...' : 'Sign In'}

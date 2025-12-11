@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import styles from './HomePage.module.css';
@@ -6,6 +7,41 @@ export const HomePage = () => {
   const techStack = ['TypeScript', 'React', 'Vite', 'NestJS', 'PostgreSQL', 'Docker'];
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [showAuthMessage, setShowAuthMessage] = useState(false);
+
+  const handleProtectedClick = (e: React.MouseEvent, path: string) => {
+    if (!user) {
+      e.preventDefault();
+      setShowAuthMessage(true);
+      setTimeout(() => setShowAuthMessage(false), 3000);
+    } else {
+      navigate(path);
+    }
+  };
+
+  const gettingStartedSteps = [
+    {
+      step: 1,
+      title: 'Create Your First Project',
+      description: 'Set up a new project to start tracking errors',
+      icon: '📁',
+      action: user ? '/projects' : null,
+    },
+    {
+      step: 2,
+      title: 'Integrate Our SDK',
+      description: 'Add our SDK to automatically capture errors',
+      icon: '🔌',
+      action: null,
+    },
+    {
+      step: 3,
+      title: 'Start Tracking Errors',
+      description: 'Monitor errors in real-time and get notified',
+      icon: '🐛',
+      action: user ? '/errors' : null,
+    },
+  ];
 
   return (
     <div className={styles.container}>
@@ -46,10 +82,28 @@ export const HomePage = () => {
           </div>
         </div>
 
-        <div className={`${styles.card} ${styles.mockupPagesCard}`}>
-          <h2>Mockup Pages</h2>
-          <p>Explore the HTML/CSS mockups for all application screens:</p>
+        <div className={`${styles.card} ${styles.gettingStartedCard}`}>
+          <h2>Getting Started</h2>
+          <p>Follow these steps to start tracking errors in your applications:</p>
+          <div className={styles.stepsGrid}>
+            {gettingStartedSteps.map((step) => (
+              <div key={step.step} className={styles.stepCard}>
+                <div className={styles.stepNumber}>{step.step}</div>
+                <h3 className={styles.stepTitle}>
+                  <span>{step.icon}</span>
+                  {step.title}
+                </h3>
+                <p className={styles.stepDescription}>{step.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
+
+        {showAuthMessage && (
+          <div className={styles.authMessage}>
+            <span>🔒</span> Please sign in to access this feature
+          </div>
+        )}
 
         <div className={styles.mockupsGrid}>
           {user ? (
@@ -88,11 +142,86 @@ export const HomePage = () => {
                 </h3>
                 <p>User profile, team management, and application settings</p>
               </Link>
+
+              <div
+                className={styles.mockupCard}
+                onClick={(e) => handleProtectedClick(e, '/projects')}
+                style={{ cursor: 'pointer' }}
+              >
+                <h3>
+                  <span className={styles.mockupIcon}>➕</span> New Project
+                </h3>
+                <p>Create a new project to start tracking errors</p>
+              </div>
             </>
           ) : (
-            <div style={{ gridColumn: '1 / -1', padding: '2rem', textAlign: 'center', color: '#6b7280' }}>
-              Please sign in to access the application features
-            </div>
+            <>
+              <div
+                className={styles.mockupCard}
+                onClick={(e) => handleProtectedClick(e, '/dashboard')}
+                style={{ cursor: 'pointer' }}
+              >
+                <h3>
+                  <span className={styles.mockupIcon}>📊</span> Dashboard
+                </h3>
+                <p>Main overview with statistics, charts, and recent errors</p>
+              </div>
+
+              <div
+                className={styles.mockupCard}
+                onClick={(e) => handleProtectedClick(e, '/projects')}
+                style={{ cursor: 'pointer' }}
+              >
+                <h3>
+                  <span className={styles.mockupIcon}>📁</span> Projects
+                </h3>
+                <p>List of all projects with error counts and status</p>
+              </div>
+
+              <div
+                className={styles.mockupCard}
+                onClick={(e) => handleProtectedClick(e, '/errors')}
+                style={{ cursor: 'pointer' }}
+              >
+                <h3>
+                  <span className={styles.mockupIcon}>🐛</span> Errors List
+                </h3>
+                <p>Filterable and sortable list of errors with details</p>
+              </div>
+
+              <div
+                className={styles.mockupCard}
+                onClick={(e) => handleProtectedClick(e, '/register-incident')}
+                style={{ cursor: 'pointer' }}
+              >
+                <h3>
+                  <span className={styles.mockupIcon}>📝</span> Register Incident
+                </h3>
+                <p>Form to manually report and register new errors</p>
+              </div>
+
+              <div
+                className={styles.mockupCard}
+                onClick={(e) => handleProtectedClick(e, '/settings')}
+                style={{ cursor: 'pointer' }}
+              >
+                <h3>
+                  <span className={styles.mockupIcon}>⚙️</span> Settings
+                </h3>
+                <p>User profile, team management, and application settings</p>
+              </div>
+
+              <div
+                className={styles.mockupCard}
+                onClick={(e) => handleProtectedClick(e, '/projects')}
+                style={{ cursor: 'pointer' }}
+              >
+                <h3>
+                  <span className={styles.mockupIcon}>➕</span> New Project
+                </h3>
+                <p>Create a new project to start tracking errors</p>
+              </div>
+            </>
           )}
         </div>
       </main>

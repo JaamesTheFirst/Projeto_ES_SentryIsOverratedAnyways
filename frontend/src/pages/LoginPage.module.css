@@ -1,23 +1,26 @@
 .loginContainer {
   width: 100%;
-  max-width: 450px;
   padding: 1rem;
-  margin: 2rem auto;
+  margin: 0 auto;
   overflow-x: hidden;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: var(--bg-secondary);
+  transition: background-color 0.3s ease;
 }
 
 .loginCard {
-  background: var(--bg-primary);
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  transition: background-color 0.3s ease;
+  background: var(--surface-color);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px var(--shadow);
+  border: 1px solid var(--border-color);
+  max-width: 450px;
+  width: 100%;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .loginHeader {
@@ -60,14 +63,37 @@
   border-radius: 8px;
   font-size: 0.875rem;
   transition: all 0.3s;
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-primary);
   color: var(--text-primary);
 }
 
 .formInput:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.errorMessage {
+  padding: 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error-color);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.dark .errorMessage {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.forgotPassword {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.forgotPassword:hover {
+  opacity: 0.8;
 }
 
 .flexBetween {
@@ -88,7 +114,7 @@
 }
 
 .textMuted {
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .btn {
@@ -102,13 +128,14 @@
 }
 
 .btnPrimary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
   color: white;
+  width: 100%;
 }
 
 .btnPrimary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
 }
 
 .divider {
@@ -151,8 +178,8 @@
 }
 
 .socialBtn:hover {
-  border-color: #667eea;
-  background: #f5f7ff;
+  border-color: var(--primary-color);
+  background: var(--bg-secondary);
 }
 
 .formFooter {
@@ -161,7 +188,7 @@
 }
 
 .formFooter a {
-  color: #667eea;
+  color: var(--primary-color);
   text-decoration: none;
   font-weight: 500;
 }
@@ -172,17 +199,17 @@
 
 .backLink {
   text-align: center;
-  margin-top: 0.75rem;
+  margin-top: 1.5rem;
 }
 
 .backLink a {
-  color: white;
+  color: var(--text-secondary);
   text-decoration: none;
   font-weight: 500;
-  opacity: 0.9;
+  transition: color 0.2s;
 }
 
 .backLink a:hover {
-  opacity: 1;
+  color: var(--primary-color);
 }
 
