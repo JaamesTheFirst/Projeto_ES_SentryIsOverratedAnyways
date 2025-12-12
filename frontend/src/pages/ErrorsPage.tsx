@@ -96,33 +96,39 @@ export const ErrorsPage = () => {
         <div className={styles.filterChips}>
           <div
             className={`${styles.chip} ${!filters.status ? styles.active : ''}`}
-            onClick={() => setFilters({ ...filters, status: undefined })}
+            onClick={() => setFilters({ ...filters, status: undefined, severity: undefined })}
           >
             🐛 All ({total})
           </div>
           <div
             className={`${styles.chip} ${filters.severity === 'error' ? styles.active : ''}`}
-            onClick={() => setFilters({ ...filters, severity: filters.severity === 'error' ? undefined : 'error' })}
+            onClick={() => setFilters({ ...filters, severity: filters.severity === 'error' ? undefined : 'error', status: undefined })}
           >
             🔴 Critical ({errors.filter((e) => e.severity === 'error' || e.severity === 'critical').length})
           </div>
           <div
             className={`${styles.chip} ${filters.severity === 'warning' ? styles.active : ''}`}
-            onClick={() => setFilters({ ...filters, severity: filters.severity === 'warning' ? undefined : 'warning' })}
+            onClick={() => setFilters({ ...filters, severity: filters.severity === 'warning' ? undefined : 'warning', status: undefined })}
           >
             ⚠️ Warning ({errors.filter((e) => e.severity === 'warning').length})
           </div>
           <div
             className={`${styles.chip} ${filters.status === 'resolved' ? styles.active : ''}`}
-            onClick={() => setFilters({ ...filters, status: filters.status === 'resolved' ? undefined : 'resolved' })}
+            onClick={() => setFilters({ ...filters, status: filters.status === 'resolved' ? undefined : 'resolved', severity: undefined })}
           >
             ✅ Resolved ({errors.filter((e) => e.status === 'resolved').length})
           </div>
           <div
             className={`${styles.chip} ${filters.status === 'unresolved' ? styles.active : ''}`}
-            onClick={() => setFilters({ ...filters, status: filters.status === 'unresolved' ? undefined : 'unresolved' })}
+            onClick={() => setFilters({ ...filters, status: filters.status === 'unresolved' ? undefined : 'unresolved', severity: undefined })}
           >
             ❌ Unresolved ({errors.filter((e) => e.status === 'unresolved').length})
+          </div>
+          <div
+            className={`${styles.chip} ${filters.status === 'deleted' ? styles.active : ''}`}
+            onClick={() => setFilters({ ...filters, status: filters.status === 'deleted' ? undefined : 'deleted', severity: undefined })}
+          >
+            🗑️ Deleted ({errors.filter((e) => e.status === 'deleted').length || 0})
           </div>
         </div>
       </div>

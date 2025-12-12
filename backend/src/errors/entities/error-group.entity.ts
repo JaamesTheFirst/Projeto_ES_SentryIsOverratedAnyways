@@ -11,10 +11,12 @@ export enum ErrorSeverity {
   INFO = 'info',
 }
 
+//need add Analyzing, In Resolution
 export enum ErrorStatus {
   UNRESOLVED = 'unresolved',
   RESOLVED = 'resolved',
   IGNORED = 'ignored',
+  DELETED = 'deleted',
 }
 
 @Entity('error_groups')

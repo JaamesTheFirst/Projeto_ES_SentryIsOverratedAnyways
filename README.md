@@ -402,6 +402,40 @@ docker system prune -a
 
 Make sure PostgreSQL is running and the credentials in your `.env` file match.
 
+### Permission Denied Errors (WSL/Ubuntu)
+
+If you encounter `EACCES: permission denied` errors when running Vite or npm (especially in WSL):
+
+**Quick Fix:**
+```bash
+# Run the permission fix script
+npm run fix:permissions
+
+# Or manually:
+chmod +x scripts/fix-permissions.sh
+./scripts/fix-permissions.sh
+```
+
+**Manual Fix:**
+```bash
+# Fix frontend node_modules permissions
+cd frontend
+sudo chown -R $(whoami):$(whoami) node_modules
+chmod -R u+rwX,go+rX node_modules
+
+# Remove problematic Vite cache
+rm -rf node_modules/.vite/deps_temp_*
+
+# If issues persist, reinstall dependencies
+rm -rf node_modules
+npm install
+```
+
+**Common Causes:**
+- Files created by different users (e.g., root vs. regular user)
+- Files copied from Windows to WSL with incorrect permissions
+- Docker containers creating files with root ownership
+
 ---
 
 ## 📧 Contact

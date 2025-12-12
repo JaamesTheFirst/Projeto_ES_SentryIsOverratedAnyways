@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { projectsService } from '../services/projects.service';
+import { CreateProjectModal } from '../components/CreateProjectModal';
 import styles from './ProjectsPage.module.css';
 import '../styles/common.css';
 
 export const ProjectsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: projects, isLoading } = useQuery({
@@ -49,7 +51,12 @@ export const ProjectsPage = () => {
           <h1 className={styles.pageTitle}>Projects</h1>
           <p className={styles.pageSubtitle}>Manage and monitor all your applications</p>
         </div>
-        <button className={`${styles.btn} ${styles.btnPrimary}`}>+ Create New Project</button>
+        <button 
+          className={`${styles.btn} ${styles.btnPrimary}`}
+          onClick={() => setIsCreateModalOpen(true)}
+        >
+          + Create New Project
+        </button>
       </div>
 
       <div className={styles.filtersBar}>
@@ -129,6 +136,11 @@ export const ProjectsPage = () => {
           ))
         )}
       </div>
+
+      <CreateProjectModal 
+        isOpen={isCreateModalOpen} 
+        onClose={() => setIsCreateModalOpen(false)} 
+      />
     </main>
   );
 };
