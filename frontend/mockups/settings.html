@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Error Management Platform</title>
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        .main-content {
+            padding: 1rem 0;
+            overflow-x: hidden;
+        }
+        
+        .container.main-content {
+            padding: 1rem;
+            overflow-x: hidden;
+        }
+
+        .settings-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+
+        .settings-sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+        }
+
+        .settings-menu {
+            list-style: none;
+        }
+
+        .settings-menu-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .settings-menu-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            color: #6b7280;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .settings-menu-link:hover {
+            background: #f9fafb;
+            color: #1f2937;
+        }
+
+        .settings-menu-link.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .settings-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .settings-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .section-description {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .profile-section {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .profile-avatar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .profile-avatar-large {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .profile-form {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-info h3 {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .notification-info p {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e7eb;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: #667eea;
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        .api-key-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #f9fafb;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 1rem;
+        }
+
+        .api-key-text {
+            flex: 1;
+            color: #1f2937;
+        }
+
+        .danger-zone {
+            border: 2px solid #fee2e2;
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: #fef2f2;
+        }
+
+        .danger-zone h3 {
+            color: #dc2626;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .danger-zone p {
+            color: #991b1b;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 1024px) {
+            .settings-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-sidebar {
+                position: static;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="navbar-brand">
+                <span>🚀</span>
+                <span>Error Management</span>
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="errors.html">Errors</a></li>
+                <li><a href="settings.html" class="active">Settings</a></li>
+            </ul>
+            <div class="navbar-actions">
+                <a href="register-incident.html" class="btn btn-sm btn-secondary" style="text-decoration: none;">+ Report Error</a>
+                <button class="btn btn-sm btn-primary">+ New Project</button>
+                <div class="user-menu">
+                    <div class="avatar">JD</div>
+                    <span>John Doe</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Settings</h1>
+            <p class="page-subtitle">Manage your account and application preferences</p>
+        </div>
+
+        <!-- Settings Layout -->
+        <div class="settings-layout">
+            <!-- Sidebar -->
+            <aside class="settings-sidebar">
+                <ul class="settings-menu">
+                    <li class="settings-menu-item">
+                        <a href="#profile" class="settings-menu-link active">
+                            <span>👤</span>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                    <li class="settings-menu-item">
+                        <a href="#notifications" class="settings-menu-link">
+                            <span>🔔</span>
+                            <span>Notifications</span>
+                        </a>
+                    </li>
+                    <li class="settings-menu-item">
+                        <a href="#security" class="settings-menu-link">
+                            <span>🔐</span>
+                            <span>Security</span>
+                        </a>
+                    </li>
+                    <li class="settings-menu-item">
+                        <a href="#team-roles" class="settings-menu-link">
+                            <span>👥</span>
+                            <span>Team & Roles</span>
+                        </a>
+                    </li>
+                    <li class="settings-menu-item">
+                        <a href="#api-keys" class="settings-menu-link">
+                            <span>🔑</span>
+                            <span>API Keys</span>
+                        </a>
+                    </li>
+                    <li class="settings-menu-item">
+                        <a href="#integrations" class="settings-menu-link">
+                            <span>🔗</span>
+                            <span>Integrations</span>
+                        </a>
+                    </li>
+                    <li class="settings-menu-item">
+                        <a href="#billing" class="settings-menu-link">
+                            <span>💳</span>
+                            <span>Billing</span>
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+
+            <!-- Content -->
+            <div class="settings-content">
+                <!-- Profile Settings -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <h2>Profile Settings</h2>
+                        <p class="section-description">Update your personal information and profile picture</p>
+                    </div>
+
+                    <div class="profile-section">
+                        <div class="profile-avatar-section">
+                            <div class="profile-avatar-large">JD</div>
+                            <button class="btn btn-outline btn-sm">Change Photo</button>
+                        </div>
+
+                        <div class="profile-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="firstName">First Name</label>
+                                    <input type="text" id="firstName" class="form-input" value="John" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="lastName">Last Name</label>
+                                    <input type="text" id="lastName" class="form-input" value="Doe" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="email">Email Address</label>
+                                <input type="email" id="email" class="form-input" value="john.doe@example.com" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="bio">Bio</label>
+                                <textarea id="bio" class="form-textarea" placeholder="Tell us about yourself...">Full-stack developer passionate about building great user experiences.</textarea>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <button class="btn btn-primary">Save Changes</button>
+                                <button class="btn btn-outline">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Notification Settings -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <h2>Notification Preferences</h2>
+                        <p class="section-description">Choose how you want to be notified about errors and updates</p>
+                    </div>
+
+                    <div>
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <h3>Email Notifications</h3>
+                                <p>Receive email alerts for critical errors</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <h3>Browser Notifications</h3>
+                                <p>Get real-time browser alerts for new errors</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <h3>Weekly Summary</h3>
+                                <p>Receive a weekly email with error statistics</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <h3>Slack Notifications</h3>
+                                <p>Send error alerts to your Slack workspace</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <h3>New Feature Announcements</h3>
+                                <p>Get notified about new features and updates</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Security Settings -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <h2>Security</h2>
+                        <p class="section-description">Manage your password and security settings</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" class="form-input" placeholder="••••••••" />
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="newPassword">New Password</label>
+                            <input type="password" id="newPassword" class="form-input" placeholder="••••••••" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" class="form-input" placeholder="••••••••" />
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary">Update Password</button>
+
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                        <h3 style="font-weight: 600; margin-bottom: 0.5rem;">Two-Factor Authentication</h3>
+                        <p class="text-muted text-sm mb-2">Add an extra layer of security to your account</p>
+                        <button class="btn btn-secondary">Enable 2FA</button>
+                    </div>
+                </section>
+
+                <!-- Team & Roles Management -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <h2>Team & Roles</h2>
+                        <p class="section-description">Manage team members and their roles in the organization</p>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <div class="flex-between mb-3">
+                            <h3 style="font-weight: 600; font-size: 1rem;">Team Members</h3>
+                            <button class="btn btn-primary btn-sm">+ Invite Member</button>
+                        </div>
+
+                        <!-- Team Members List -->
+                        <div style="border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+                            <!-- Member 1 -->
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border-bottom: 1px solid #f3f4f6;">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div class="avatar" style="width: 48px; height: 48px; font-size: 1rem;">JD</div>
+                                    <div>
+                                        <div style="font-weight: 600; color: #1f2937;">John Doe</div>
+                                        <div style="font-size: 0.875rem; color: #6b7280;">john.doe@example.com</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <select class="form-select" style="width: auto; padding: 0.5rem 1rem;">
+                                        <option>Admin</option>
+                                        <option>Developer</option>
+                                        <option>Manager</option>
+                                        <option>Viewer</option>
+                                    </select>
+                                    <span class="badge badge-success">Active</span>
+                                    <button class="btn btn-sm btn-outline">Edit</button>
+                                </div>
+                            </div>
+
+                            <!-- Member 2 -->
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border-bottom: 1px solid #f3f4f6;">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div class="avatar" style="width: 48px; height: 48px; font-size: 1rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">JS</div>
+                                    <div>
+                                        <div style="font-weight: 600; color: #1f2937;">Jane Smith</div>
+                                        <div style="font-size: 0.875rem; color: #6b7280;">jane.smith@example.com</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <select class="form-select" style="width: auto; padding: 0.5rem 1rem;">
+                                        <option>Admin</option>
+                                        <option selected>Developer</option>
+                                        <option>Manager</option>
+                                        <option>Viewer</option>
+                                    </select>
+                                    <span class="badge badge-success">Active</span>
+                                    <button class="btn btn-sm btn-outline">Edit</button>
+                                </div>
+                            </div>
+
+                            <!-- Member 3 -->
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; border-bottom: 1px solid #f3f4f6;">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div class="avatar" style="width: 48px; height: 48px; font-size: 1rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">MW</div>
+                                    <div>
+                                        <div style="font-weight: 600; color: #1f2937;">Mike Wilson</div>
+                                        <div style="font-size: 0.875rem; color: #6b7280;">mike.wilson@example.com</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <select class="form-select" style="width: auto; padding: 0.5rem 1rem;">
+                                        <option>Admin</option>
+                                        <option>Developer</option>
+                                        <option selected>Manager</option>
+                                        <option>Viewer</option>
+                                    </select>
+                                    <span class="badge badge-success">Active</span>
+                                    <button class="btn btn-sm btn-outline">Edit</button>
+                                </div>
+                            </div>
+
+                            <!-- Member 4 -->
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem;">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div class="avatar" style="width: 48px; height: 48px; font-size: 1rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">ED</div>
+                                    <div>
+                                        <div style="font-weight: 600; color: #1f2937;">Emma Davis</div>
+                                        <div style="font-size: 0.875rem; color: #6b7280;">emma.davis@example.com</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <select class="form-select" style="width: auto; padding: 0.5rem 1rem;">
+                                        <option>Admin</option>
+                                        <option>Developer</option>
+                                        <option>Manager</option>
+                                        <option selected>Viewer</option>
+                                    </select>
+                                    <span class="badge badge-success">Active</span>
+                                    <button class="btn btn-sm btn-outline">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Role Descriptions -->
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                        <h3 style="font-weight: 600; margin-bottom: 1rem;">Role Permissions</h3>
+                        <div style="display: grid; gap: 1rem;">
+                            <!-- Admin Role -->
+                            <div style="padding: 1rem; background: #f9fafb; border-radius: 8px; border-left: 4px solid #667eea;">
+                                <div style="font-weight: 600; color: #667eea; margin-bottom: 0.5rem;">👑 Admin</div>
+                                <div style="font-size: 0.875rem; color: #6b7280;">
+                                    Full access to all features including user management, project settings, and billing.
+                                    Can delete incidents and modify critical settings.
+                                </div>
+                            </div>
+
+                            <!-- Developer Role -->
+                            <div style="padding: 1rem; background: #f9fafb; border-radius: 8px; border-left: 4px solid #10b981;">
+                                <div style="font-weight: 600; color: #059669; margin-bottom: 0.5rem;">💻 Developer</div>
+                                <div style="font-size: 0.875rem; color: #6b7280;">
+                                    Can view, register, and manage incidents. Can assign errors, add comments, and resolve issues.
+                                    Cannot access billing or user management.
+                                </div>
+                            </div>
+
+                            <!-- Manager Role -->
+                            <div style="padding: 1rem; background: #f9fafb; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                                <div style="font-weight: 600; color: #d97706; margin-bottom: 0.5rem;">📊 Manager</div>
+                                <div style="font-size: 0.875rem; color: #6b7280;">
+                                    Can view all incidents and reports, assign team members, and export data.
+                                    Cannot modify system settings or delete incidents.
+                                </div>
+                            </div>
+
+                            <!-- Viewer Role -->
+                            <div style="padding: 1rem; background: #f9fafb; border-radius: 8px; border-left: 4px solid #6b7280;">
+                                <div style="font-weight: 600; color: #6b7280; margin-bottom: 0.5rem;">👁️ Viewer</div>
+                                <div style="font-size: 0.875rem; color: #6b7280;">
+                                    Read-only access to view incidents and dashboards. Cannot register, edit, or delete incidents.
+                                    Ideal for stakeholders and external observers.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- API Keys -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <h2>API Keys</h2>
+                        <p class="section-description">Manage your API keys for integrating with your applications</p>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label">Production API Key</label>
+                        <div class="api-key-display">
+                            <span class="api-key-text">••••••••••••••••••••••••abcd1234</span>
+                            <button class="btn btn-sm btn-outline">👁️ Show</button>
+                            <button class="btn btn-sm btn-outline">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label class="form-label">Development API Key</label>
+                        <div class="api-key-display">
+                            <span class="api-key-text">••••••••••••••••••••••••efgh5678</span>
+                            <button class="btn btn-sm btn-outline">👁️ Show</button>
+                            <button class="btn btn-sm btn-outline">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button class="btn btn-primary">Generate New Key</button>
+                        <button class="btn btn-danger btn-outline">Revoke All Keys</button>
+                    </div>
+                </section>
+
+                <!-- Danger Zone -->
+                <section class="settings-section">
+                    <div class="section-header">
+                        <h2>Danger Zone</h2>
+                        <p class="section-description">Irreversible and destructive actions</p>
+                    </div>
+
+                    <div class="danger-zone">
+                        <h3>Delete Account</h3>
+                        <p>Once you delete your account, there is no going back. All your data, projects, and errors will be permanently deleted.</p>
+                        <button class="btn btn-danger">Delete My Account</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+
