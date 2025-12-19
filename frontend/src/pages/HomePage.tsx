@@ -86,16 +86,40 @@ export const HomePage = () => {
           <h2>Getting Started</h2>
           <p>Follow these steps to start tracking errors in your applications:</p>
           <div className={styles.stepsGrid}>
-            {gettingStartedSteps.map((step) => (
-              <div key={step.step} className={styles.stepCard}>
-                <div className={styles.stepNumber}>{step.step}</div>
-                <h3 className={styles.stepTitle}>
-                  <span>{step.icon}</span>
-                  {step.title}
-                </h3>
-                <p className={styles.stepDescription}>{step.description}</p>
-              </div>
-            ))}
+            {gettingStartedSteps.map((step) => {
+              if (step.action && user) {
+                return (
+                  <Link
+                    key={step.step}
+                    to={step.action}
+                    className={styles.stepCard}
+                    style={{ textDecoration: 'none', color: 'inherit' }}
+                  >
+                    <div className={styles.stepNumber}>{step.step}</div>
+                    <h3 className={styles.stepTitle}>
+                      <span>{step.icon}</span>
+                      {step.title}
+                    </h3>
+                    <p className={styles.stepDescription}>{step.description}</p>
+                  </Link>
+                );
+              }
+              return (
+                <div
+                  key={step.step}
+                  className={styles.stepCard}
+                  onClick={!user ? (e) => handleProtectedClick(e, '/projects') : undefined}
+                  style={!user ? { cursor: 'pointer' } : {}}
+                >
+                  <div className={styles.stepNumber}>{step.step}</div>
+                  <h3 className={styles.stepTitle}>
+                    <span>{step.icon}</span>
+                    {step.title}
+                  </h3>
+                  <p className={styles.stepDescription}>{step.description}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
 

@@ -28,6 +28,8 @@ export const ErrorDetailPage = () => {
   const deleteMutation = useMutation({
     mutationFn: () => errorsService.delete(id!),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['errors'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
       navigate('/errors');
     },
   });

@@ -35,7 +35,8 @@ export interface Project {
 
 // Error types
 export type ErrorSeverity = 'critical' | 'error' | 'warning' | 'info';
-export type ErrorStatus = 'unresolved' | 'resolved' | 'ignored';
+//change error status in accordance with other file: Analyzing & In Resolution
+export type ErrorStatus = 'unresolved' | 'resolved' | 'ignored' | 'deleted';
 
 export interface ErrorGroup {
   id: string;

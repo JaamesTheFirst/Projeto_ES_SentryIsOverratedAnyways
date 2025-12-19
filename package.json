@@ -17,7 +17,8 @@
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
-    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install"
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "fix:permissions": "chmod +x scripts/fix-permissions.sh && ./scripts/fix-permissions.sh"
   },
   "keywords": [
     "error-management",

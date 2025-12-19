@@ -62,7 +62,7 @@ export class ErrorsController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async remove(@Request() req, @Param('id') id: string) {
-    // TODO: Implement soft delete or cascade delete
+    await this.errorsService.remove(id, req.user.userId);
     return { message: 'Error deleted successfully' };
   }
 }

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Tracker React SDK Test</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #f0f0f0;
+        }
+        button:hover {
+            background: #e0e0e0;
+        }
+        .error {
+            color: #d32f2f;
+            padding: 10px;
+            background: #ffebee;
+            border: 1px solid #ffcdd2;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #2e7d32;
+            padding: 10px;
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .info {
+            padding: 10px;
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Error Tracker React SDK Test</h1>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Mock the SDK for testing (in real usage, import from @error-tracker/react)
+        // For this test, we'll use the actual JS SDK from the built files
+        const ErrorTracker = {
+            init: (config) => {
+                console.log('ErrorTracker.init called with:', config);
+                window.errorTrackerConfig = config;
+            },
+            captureError: (error, severity, metadata) => {
+                console.log('ErrorTracker.captureError:', { error, severity, metadata });
+                const config = window.errorTrackerConfig;
+                if (!config) {
+                    console.warn('ErrorTracker not initialized');
+                    return;
+                }
+                // Send to API
+                fetch(`${config.apiUrl}/errors/report`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${config.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        errorType: error.name || 'Error',
+                        message: error.message || String(error),
+                        stackTrace: error.stack || String(error),
+                        severity: severity || 'error',
+                        metadata: {
+                            ...metadata,
+                            environment: config.environment,
+                            release: config.release
+                        }
+                    })
+                }).then(res => {
+                    if (res.ok) {
+                        console.log('✅ Error sent successfully');
+                        window.lastTestResult = { success: true, message: 'Error sent successfully!' };
+                    } else {
+                        console.error('❌ Failed to send error:', res.status);
+                        window.lastTestResult = { success: false, message: `Failed: ${res.status}` };
+                    }
+                }).catch(err => {
+                    console.error('❌ Error:', err);
+                    window.lastTestResult = { success: false, message: `Error: ${err.message}` };
+                });
+            },
+            captureMessage: (message, severity, metadata) => {
+                console.log('ErrorTracker.captureMessage:', { message, severity, metadata });
+                ErrorTracker.captureError(new Error(message), severity, metadata);
+            }
+        };
+
+        // Simple ErrorBoundary implementation
+        class ErrorBoundary extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = { hasError: false, error: null };
+            }
+
+            static getDerivedStateFromError(error) {
+                return { hasError: true, error };
+            }
+
+            componentDidCatch(error, errorInfo) {
+                ErrorTracker.captureError(error, 'error', {
+                    componentStack: errorInfo.componentStack,
+                    errorBoundary: true
+                });
+            }
+
+            render() {
+                if (this.state.hasError) {
+                    return (
+                        <div className="error">
+                            <h3>⚠️ Error Caught by ErrorBoundary!</h3>
+                            <p>{this.state.error?.message}</p>
+                            <button onClick={() => this.setState({ hasError: false, error: null })}>
+                                Reset
+                            </button>
+                        </div>
+                    );
+                }
+                return this.props.children;
+            }
+        }
+
+        // Test component that throws errors
+        function BuggyComponent() {
+            const [shouldThrow, setShouldThrow] = useState(false);
+
+            if (shouldThrow) {
+                throw new Error('Test error from BuggyComponent!');
+            }
+
+            return (
+                <div>
+                    <button onClick={() => setShouldThrow(true)}>
+                        🐛 Trigger React Error (ErrorBoundary)
+                    </button>
+                </div>
+            );
+        }
+
+        // Main test app
+        function TestApp() {
+            const [apiKey, setApiKey] = useState('');
+            const [apiUrl, setApiUrl] = useState('http://localhost:3000/api');
+            const [initialized, setInitialized] = useState(false);
+            const [testResult, setTestResult] = useState(null);
+
+            useEffect(() => {
+                // Check for result updates
+                const interval = setInterval(() => {
+                    if (window.lastTestResult) {
+                        setTestResult(window.lastTestResult);
+                        window.lastTestResult = null;
+                    }
+                }, 100);
+                return () => clearInterval(interval);
+            }, []);
+
+            const handleInit = () => {
+                if (!apiKey) {
+                    alert('Please enter an API key');
+                    return;
+                }
+                ErrorTracker.init({
+                    apiKey,
+                    apiUrl,
+                    environment: 'test',
+                    release: '1.0.0'
+                });
+                setInitialized(true);
+            };
+
+            const testManualError = () => {
+                try {
+                    throw new Error('Manual test error from React SDK');
+                } catch (error) {
+                    ErrorTracker.captureError(error, 'error', {
+                        test: true,
+                        source: 'manual-test'
+                    });
+                }
+            };
+
+            const testMessage = () => {
+                ErrorTracker.captureMessage('Test message from React SDK', 'info', {
+                    test: true,
+                    source: 'message-test'
+                });
+            };
+
+            const testBrowserError = () => {
+                // Trigger a browser error (not React)
+                throw new Error('Browser error test');
+            };
+
+            return (
+                <div>
+                    {!initialized ? (
+                        <div className="info">
+                            <h2>Setup</h2>
+                            <p>
+                                <label>
+                                    API Key: <br/>
+                                    <input
+                                        type="text"
+                                        value={apiKey}
+                                        onChange={(e) => setApiKey(e.target.value)}
+                                        placeholder="err_abc123..."
+                                        style={{ width: '100%', padding: '8px', marginTop: '5px' }}
+                                    />
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    API URL: <br/>
+                                    <input
+                                        type="text"
+                                        value={apiUrl}
+                                        onChange={(e) => setApiUrl(e.target.value)}
+                                        style={{ width: '100%', padding: '8px', marginTop: '5px' }}
+                                    />
+                                </label>
+                            </p>
+                            <button onClick={handleInit}>Initialize SDK</button>
+                        </div>
+                    ) : (
+                        <div>
+                            <div className="success">
+                                ✅ SDK Initialized!
+                            </div>
+
+                            <h2>Tests</h2>
+
+                            <ErrorBoundary>
+                                <div>
+                                    <h3>React Error Tests</h3>
+                                    <BuggyComponent />
+                                    <br/>
+
+                                    <h3>Manual Error Tests</h3>
+                                    <button onClick={testManualError}>
+                                        📝 Capture Manual Error
+                                    </button>
+                                    <button onClick={testMessage}>
+                                        💬 Capture Message
+                                    </button>
+                                    <br/>
+
+                                    <h3>Browser Error Test</h3>
+                                    <button onClick={testBrowserError}>
+                                        🌐 Trigger Browser Error
+                                    </button>
+                                </div>
+                            </ErrorBoundary>
+
+                            {testResult && (
+                                <div className={testResult.success ? 'success' : 'error'}>
+                                    {testResult.success ? '✅' : '❌'} {testResult.message}
+                                </div>
+                            )}
+
+                            <div className="info" style={{ marginTop: '20px' }}>
+                                <h3>📋 Instructions:</h3>
+                                <ol>
+                                    <li>Click "Trigger React Error" to test ErrorBoundary</li>
+                                    <li>Click "Capture Manual Error" to test manual capture</li>
+                                    <li>Click "Capture Message" to test message capture</li>
+                                    <li>Check your dashboard at <a href="http://localhost:5173/errors" target="_blank">http://localhost:5173/errors</a></li>
+                                    <li>Check browser console for logs</li>
+                                </ol>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<TestApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
+

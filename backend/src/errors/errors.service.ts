@@ -7,7 +7,7 @@ import { ErrorOccurrence } from './entities/error-occurrence.entity';
 import { ReportErrorDto } from './dto/report-error.dto';
 import { CreateErrorDto } from './dto/create-error.dto';
 import { UpdateErrorDto } from './dto/update-error.dto';
-import { ErrorFilterDto } from './dto/error-filter.dto';
+import { ErrorFilterDto } from './dto/error-filter.dto';  
 
 @Injectable()
 export class ErrorsService {
@@ -63,6 +63,18 @@ export class ErrorsService {
   }
 
   // Create fingerprint for error grouping
+  /* 
+  the fingerprint template: 
+  errorType:normalizedMessage:file:functionName
+  the fingerprint is a sha256 hash of the fingerprint string
+  the fingerprint is used to group errors
+  the fingerprint is used to identify errors
+  the fingerprint is used to track errors
+  the fingerprint is used to monitor errors
+  the fingerprint is used to analyze errors
+  the fingerprint is used to resolve errors
+  the fingerprint is used to ignore errors
+  */
   private createFingerprint(
     normalizedMessage: string,
     errorType: string,
@@ -213,12 +225,20 @@ export class ErrorsService {
       queryBuilder.andWhere('project.ownerId = :ownerId', { ownerId });
     }
 
-    if (filters.severity) {
-      queryBuilder.andWhere('errorGroup.severity = :severity', { severity: filters.severity });
+    // Handle status filter - exclude deleted by default unless explicitly filtering for deleted
+    if (filters.status === ErrorStatus.DELETED) {
+      queryBuilder.andWhere('errorGroup.status = :status', { status: ErrorStatus.DELETED });
+    } else {
+      // Exclude deleted errors
+      queryBuilder.andWhere('errorGroup.status != :deletedStatus', { deletedStatus: ErrorStatus.DELETED });
+      // Apply status filter if provided (and not deleted)
+      if (filters.status) {
+        queryBuilder.andWhere('errorGroup.status = :status', { status: filters.status });
+      }
     }
 
-    if (filters.status) {
-      queryBuilder.andWhere('errorGroup.status = :status', { status: filters.status });
+    if (filters.severity) {
+      queryBuilder.andWhere('errorGroup.severity = :severity', { severity: filters.severity });
     }
 
     if (filters.search) {
@@ -301,12 +321,20 @@ export class ErrorsService {
     return await this.errorGroupsRepository.save(errorGroup);
   }
 
+  // Delete error (soft delete - sets status to deleted)
+  async remove(id: string, ownerId?: string): Promise<void> {
+    const errorGroup = await this.findOne(id, ownerId);
+    errorGroup.status = ErrorStatus.DELETED;
+    await this.errorGroupsRepository.save(errorGroup);
+  }
+
   // Get dashboard statistics
   async getDashboardStats(ownerId: string) {
     const queryBuilder = this.errorGroupsRepository
       .createQueryBuilder('errorGroup')
       .leftJoin('errorGroup.project', 'project')
-      .where('project.ownerId = :ownerId', { ownerId });
+      .where('project.ownerId = :ownerId', { ownerId })
+      .andWhere('errorGroup.status != :deletedStatus', { deletedStatus: ErrorStatus.DELETED });
 
     const total = await queryBuilder.getCount();
 
@@ -317,14 +345,16 @@ export class ErrorsService {
     const resolved = await queryBuilder
       .where('project.ownerId = :ownerId', { ownerId })
       .andWhere('errorGroup.status = :status', { status: ErrorStatus.RESOLVED })
+      .andWhere('errorGroup.status != :deletedStatus', { deletedStatus: ErrorStatus.DELETED })
       .getCount();
 
-    // Get recent errors (last 5)
+    // Get recent errors (last 5) - excluding deleted
     const recent = await this.errorGroupsRepository
       .createQueryBuilder('errorGroup')
       .leftJoin('errorGroup.project', 'project')
       .leftJoinAndSelect('errorGroup.project', 'projectData')
       .where('project.ownerId = :ownerId', { ownerId })
+      .andWhere('errorGroup.status != :deletedStatus', { deletedStatus: ErrorStatus.DELETED })
       .orderBy('errorGroup.lastSeenAt', 'DESC')
       .take(5)
       .getMany();
