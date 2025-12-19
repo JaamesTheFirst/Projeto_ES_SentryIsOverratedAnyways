@@ -7,7 +7,7 @@ import { ErrorOccurrence } from './entities/error-occurrence.entity';
 import { ReportErrorDto } from './dto/report-error.dto';
 import { CreateErrorDto } from './dto/create-error.dto';
 import { UpdateErrorDto } from './dto/update-error.dto';
-import { ErrorFilterDto } from './dto/error-filter.dto';
+import { ErrorFilterDto } from './dto/error-filter.dto';  
 
 @Injectable()
 export class ErrorsService {

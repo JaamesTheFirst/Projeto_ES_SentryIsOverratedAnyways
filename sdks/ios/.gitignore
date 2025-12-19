@@ -1,0 +1,14 @@
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+.DS_Store
+build/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+DerivedData/
+.swiftpm/
+
