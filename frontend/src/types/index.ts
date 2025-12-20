@@ -58,6 +58,7 @@ export interface ErrorGroup {
   project?: Project;
   assignedTo?: User;
   occurrences?: ErrorOccurrence[];
+  comments?: ErrorComment[];
 }
 
 export interface ErrorOccurrence {
@@ -81,12 +82,38 @@ export interface ErrorOccurrence {
   updatedAt: string;
 }
 
+export interface ErrorComment {
+  id: string;
+  content: string;
+  errorGroupId: string;
+  authorId: string;
+  isInternal: boolean;
+  createdAt: string;
+  updatedAt: string;
+  author?: User;
+}
+
 export interface ErrorListResponse {
   items: ErrorGroup[];
   total: number;
   page: number;
   limit: number;
   totalPages: number;
+}
+
+// Notification types
+export interface Notification {
+  id: string;
+  type: 'error_status_changed' | 'error_assigned' | 'error_comment';
+  message: string;
+  read: boolean;
+  userId: string;
+  errorGroupId?: string;
+  actorId?: string;
+  createdAt: string;
+  updatedAt: string;
+  errorGroup?: ErrorGroup;
+  actor?: User;
 }
 
 // Dashboard types

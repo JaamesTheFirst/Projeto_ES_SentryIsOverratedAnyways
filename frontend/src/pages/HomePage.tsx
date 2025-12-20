@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { ChatHelper } from '../components/ChatHelper';
+import { projectsService } from '../services/projects.service';
 import styles from './HomePage.module.css';
 
 export const HomePage = () => {
@@ -8,6 +10,13 @@ export const HomePage = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [showAuthMessage, setShowAuthMessage] = useState(false);
+  const [userProjects, setUserProjects] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (user) {
+      projectsService.getAll().then(setUserProjects).catch(() => setUserProjects([]));
+    }
+  }, [user]);
 
   const handleProtectedClick = (e: React.MouseEvent, path: string) => {
     if (!user) {
@@ -254,6 +263,14 @@ export const HomePage = () => {
         <p>Sprint 3 - Mockups e Iniciar a Implementação (HTML, CSS)</p>
         <p>Software Engineering Project - November 2025</p>
       </div>
+      
+      {user && (
+        <ChatHelper
+          currentPage="/"
+          userProjects={userProjects}
+          availableFeatures={['dashboard', 'projects', 'errors', 'register-incident', 'settings']}
+        />
+      )}
     </div>
   );
 };

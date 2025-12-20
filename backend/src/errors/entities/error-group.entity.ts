@@ -2,6 +2,7 @@ import { Entity, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { BaseEntity } from '../../common/entities/base.entity';
 import { Project } from '../../projects/entities/project.entity';
 import { ErrorOccurrence } from './error-occurrence.entity';
+import { ErrorComment } from './error-comment.entity';
 import { User } from '../../users/entities/user.entity';
 
 export enum ErrorSeverity {
@@ -76,7 +77,17 @@ export class ErrorGroup extends BaseEntity {
   @Column({ name: 'assigned_to_id', nullable: true })
   assignedToId: string;
 
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'reported_by_id' })
+  reportedBy?: User; // User who manually reported the error (if any)
+
+  @Column({ name: 'reported_by_id', nullable: true })
+  reportedById?: string;
+
   @OneToMany(() => ErrorOccurrence, (occurrence) => occurrence.errorGroup)
   occurrences: ErrorOccurrence[];
+
+  @OneToMany(() => ErrorComment, (comment) => comment.errorGroup)
+  comments: ErrorComment[];
 }
 

@@ -8,10 +8,14 @@ import { UsersModule } from './users/users.module';
 import { ProjectsModule } from './projects/projects.module';
 import { ErrorsModule } from './errors/errors.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { ChatModule } from './chat/chat.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { User } from './users/entities/user.entity';
 import { Project } from './projects/entities/project.entity';
 import { ErrorGroup } from './errors/entities/error-group.entity';
 import { ErrorOccurrence } from './errors/entities/error-occurrence.entity';
+import { ErrorComment } from './errors/entities/error-comment.entity';
+import { Notification } from './notifications/entities/notification.entity';
 
 @Module({
   imports: [
@@ -32,7 +36,7 @@ import { ErrorOccurrence } from './errors/entities/error-occurrence.entity';
         username: configService.get('DATABASE_USER', 'admin'),
         password: configService.get('DATABASE_PASSWORD', 'admin123'),
         database: configService.get('DATABASE_NAME', 'error_management'),
-        entities: [User, Project, ErrorGroup, ErrorOccurrence],
+        entities: [User, Project, ErrorGroup, ErrorOccurrence, ErrorComment, Notification],
         synchronize: configService.get('NODE_ENV') !== 'production',
         logging: configService.get('NODE_ENV') === 'development',
       }),
@@ -44,6 +48,8 @@ import { ErrorOccurrence } from './errors/entities/error-occurrence.entity';
     ProjectsModule,
     ErrorsModule,
     DashboardModule,
+    ChatModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
