@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import styles from './LoginPage.module.css';
 
@@ -7,9 +7,21 @@ export const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if redirected from registration
+    if (location.state?.message) {
+      setSuccess(location.state.message);
+      // Clear the message after 5 seconds
+      const timer = setTimeout(() => setSuccess(''), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [location]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +53,19 @@ export const LoginPage = () => {
           </div>
         )}
 
+        {success && (
+          <div style={{
+            padding: '12px 16px',
+            backgroundColor: '#d1fae5',
+            color: '#065f46',
+            borderRadius: '8px',
+            marginBottom: '1rem',
+            border: '1px solid #a7f3d0',
+          }}>
+            {success}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
             <label className={styles.formLabel} htmlFor="email">
@@ -49,6 +74,8 @@ export const LoginPage = () => {
             <input
               type="email"
               id="email"
+              name="email"
+              autoComplete="email"
               className={styles.formInput}
               placeholder="you@example.com"
               value={email}
@@ -65,6 +92,8 @@ export const LoginPage = () => {
             <input
               type="password"
               id="password"
+              name="current-password"
+              autoComplete="current-password"
               className={styles.formInput}
               placeholder="••••••••"
               value={password}
@@ -106,7 +135,7 @@ export const LoginPage = () => {
 
         <div className={styles.formFooter}>
           <p className={`${styles.textSm} ${styles.textMuted}`}>
-            Don't have an account? <a href="#">Sign up</a>
+            Don't have an account? <Link to="/register">Sign up</Link>
           </p>
         </div>
       </div>

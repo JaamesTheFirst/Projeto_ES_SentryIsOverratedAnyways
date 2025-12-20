@@ -1,6 +1,7 @@
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { errorsService } from '../services/errors.service';
+import { ErrorChatbox } from '../components/ErrorChatbox';
 import styles from './ErrorDetailPage.module.css';
 import '../styles/common.css';
 
@@ -197,6 +198,10 @@ export const ErrorDetailPage = () => {
                 <div style={{ color: '#6b7280' }}>No additional context available</div>
               )}
             </div>
+          </div>
+
+          <div className={styles.sectionCard}>
+            <ErrorChatbox errorId={error.id} />
           </div>
         </div>
 
