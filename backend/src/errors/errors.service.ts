@@ -1,13 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import * as crypto from 'crypto';
 import { ErrorGroup, ErrorSeverity, ErrorStatus } from './entities/error-group.entity';
 import { ErrorOccurrence } from './entities/error-occurrence.entity';
+import { ErrorComment } from './entities/error-comment.entity';
 import { ReportErrorDto } from './dto/report-error.dto';
 import { CreateErrorDto } from './dto/create-error.dto';
 import { UpdateErrorDto } from './dto/update-error.dto';
-import { ErrorFilterDto } from './dto/error-filter.dto';  
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { ErrorFilterDto } from './dto/error-filter.dto';
+import { NotificationsService } from '../notifications/notifications.service';
+import { UsersService } from '../users/users.service';  
 
 @Injectable()
 export class ErrorsService {
@@ -16,6 +20,12 @@ export class ErrorsService {
     private errorGroupsRepository: Repository<ErrorGroup>,
     @InjectRepository(ErrorOccurrence)
     private errorOccurrencesRepository: Repository<ErrorOccurrence>,
+    @InjectRepository(ErrorComment)
+    private errorCommentsRepository: Repository<ErrorComment>,
+    @Inject(forwardRef(() => NotificationsService))
+    private notificationsService: NotificationsService,
+    @Inject(forwardRef(() => UsersService))
+    private usersService: UsersService,
   ) {}
 
   // Normalize error message by removing variable values
@@ -154,7 +164,7 @@ export class ErrorsService {
   }
 
   // Create error manually (from Register Incident page)
-  async createError(createErrorDto: CreateErrorDto): Promise<ErrorGroup> {
+  async createError(createErrorDto: CreateErrorDto, userId?: string): Promise<ErrorGroup> {
     const normalizedMessage = this.normalizeMessage(createErrorDto.title);
     const context = this.extractContext(createErrorDto.stackTrace);
 
@@ -185,6 +195,7 @@ export class ErrorsService {
         line: createErrorDto.line ? parseInt(createErrorDto.line, 10) : context.line,
         functionName: '',
         projectId: createErrorDto.projectId,
+        reportedById: userId,
       });
     } else {
       errorGroup.occurrenceCount += 1;
@@ -285,15 +296,17 @@ export class ErrorsService {
   }
 
   // Find one error group
-  async findOne(id: string, ownerId?: string): Promise<ErrorGroup> {
+  async findOne(id: string, ownerId?: string, userRole?: string): Promise<ErrorGroup> {
     const queryBuilder = this.errorGroupsRepository
       .createQueryBuilder('errorGroup')
       .leftJoinAndSelect('errorGroup.project', 'project')
+      .leftJoinAndSelect('project.owner', 'owner')
       .leftJoinAndSelect('errorGroup.assignedTo', 'assignedTo')
+      .leftJoinAndSelect('errorGroup.reportedBy', 'reportedBy')
       .leftJoinAndSelect('errorGroup.occurrences', 'occurrences')
       .where('errorGroup.id = :id', { id });
 
-    if (ownerId) {
+    if (ownerId && userRole !== 'admin') {
       queryBuilder.andWhere('project.ownerId = :ownerId', { ownerId });
     }
 
@@ -303,12 +316,17 @@ export class ErrorsService {
       throw new NotFoundException('Error not found');
     }
 
+    // Load comments (filtered by role)
+    const comments = await this.getComments(id, userRole);
+    errorGroup.comments = comments;
+
     return errorGroup;
   }
 
   // Update error group
-  async update(id: string, updateErrorDto: UpdateErrorDto, ownerId?: string): Promise<ErrorGroup> {
-    const errorGroup = await this.findOne(id, ownerId);
+  async update(id: string, updateErrorDto: UpdateErrorDto, ownerId?: string, userRole?: string, actorId?: string): Promise<ErrorGroup> {
+    const errorGroup = await this.findOne(id, ownerId, userRole);
+    const oldStatus = errorGroup.status;
 
     if (updateErrorDto.status !== undefined) {
       errorGroup.status = updateErrorDto.status;
@@ -318,12 +336,38 @@ export class ErrorsService {
       errorGroup.assignedToId = updateErrorDto.assignedToId;
     }
 
-    return await this.errorGroupsRepository.save(errorGroup);
+    const savedErrorGroup = await this.errorGroupsRepository.save(errorGroup);
+
+    // Create notification if admin changed status and it's different
+    if (
+      actorId &&
+      userRole === 'admin' &&
+      updateErrorDto.status !== undefined &&
+      updateErrorDto.status !== oldStatus &&
+      savedErrorGroup.project
+    ) {
+      try {
+        const actor = await this.usersService.findOne(actorId);
+        if (actor) {
+          await this.notificationsService.notifyErrorStatusChange(
+            savedErrorGroup,
+            updateErrorDto.status,
+            actorId,
+            `${actor.firstName} ${actor.lastName}`,
+          );
+        }
+      } catch (error) {
+        // Log error but don't fail the update
+        console.error('Failed to create notification:', error);
+      }
+    }
+
+    return savedErrorGroup;
   }
 
   // Delete error (soft delete - sets status to deleted)
-  async remove(id: string, ownerId?: string): Promise<void> {
-    const errorGroup = await this.findOne(id, ownerId);
+  async remove(id: string, ownerId?: string, userRole?: string): Promise<void> {
+    const errorGroup = await this.findOne(id, ownerId, userRole);
     errorGroup.status = ErrorStatus.DELETED;
     await this.errorGroupsRepository.save(errorGroup);
   }
@@ -364,6 +408,106 @@ export class ErrorsService {
       unresolved,
       resolved,
       recentErrors: recent,
+    };
+  }
+
+  // Comment methods
+  async addComment(errorGroupId: string, authorId: string, createCommentDto: CreateCommentDto): Promise<ErrorComment> {
+    const errorGroup = await this.errorGroupsRepository.findOne({ where: { id: errorGroupId } });
+    if (!errorGroup) {
+      throw new NotFoundException('Error group not found');
+    }
+
+    const comment = this.errorCommentsRepository.create({
+      content: createCommentDto.content,
+      errorGroupId,
+      authorId,
+      isInternal: createCommentDto.isInternal || false,
+    });
+
+    return await this.errorCommentsRepository.save(comment);
+  }
+
+  async getComments(errorGroupId: string, userRole?: string): Promise<ErrorComment[]> {
+    const queryBuilder = this.errorCommentsRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.author', 'author')
+      .where('comment.errorGroupId = :errorGroupId', { errorGroupId })
+      .orderBy('comment.createdAt', 'ASC');
+
+    // If user is not admin, filter out internal comments
+    if (userRole !== 'admin') {
+      queryBuilder.andWhere('comment.isInternal = :isInternal', { isInternal: false });
+    }
+
+    return await queryBuilder.getMany();
+  }
+
+  // Admin methods - view all errors across all projects
+  async findAllForAdmin(filters: ErrorFilterDto) {
+    const queryBuilder = this.errorGroupsRepository
+      .createQueryBuilder('errorGroup')
+      .leftJoinAndSelect('errorGroup.project', 'project')
+      .leftJoinAndSelect('errorGroup.assignedTo', 'assignedTo')
+      .leftJoinAndSelect('project.owner', 'owner');
+
+    // Apply filters (admins can see all projects)
+    if (filters.projectId) {
+      queryBuilder.andWhere('errorGroup.projectId = :projectId', { projectId: filters.projectId });
+    }
+
+    // Handle status filter
+    if (filters.status === ErrorStatus.DELETED) {
+      queryBuilder.andWhere('errorGroup.status = :status', { status: ErrorStatus.DELETED });
+    } else {
+      queryBuilder.andWhere('errorGroup.status != :deletedStatus', { deletedStatus: ErrorStatus.DELETED });
+      if (filters.status) {
+        queryBuilder.andWhere('errorGroup.status = :status', { status: filters.status });
+      }
+    }
+
+    if (filters.severity) {
+      queryBuilder.andWhere('errorGroup.severity = :severity', { severity: filters.severity });
+    }
+
+    if (filters.search) {
+      queryBuilder.andWhere(
+        '(errorGroup.normalizedMessage LIKE :search OR errorGroup.file LIKE :search OR project.name LIKE :search)',
+        { search: `%${filters.search}%` },
+      );
+    }
+
+    // Date range filter
+    if (filters.dateRange && filters.dateRange !== 'all') {
+      const dateMap = {
+        '24h': 1,
+        '7d': 7,
+        '30d': 30,
+      };
+      const days = dateMap[filters.dateRange];
+      if (days) {
+        const date = new Date();
+        date.setDate(date.getDate() - days);
+        queryBuilder.andWhere('errorGroup.lastSeenAt >= :date', { date });
+      }
+    }
+
+    // Pagination
+    const page = parseInt(filters.page || '1', 10);
+    const limit = parseInt(filters.limit || '20', 10);
+    const skip = (page - 1) * limit;
+
+    queryBuilder.skip(skip).take(limit);
+    queryBuilder.orderBy('errorGroup.lastSeenAt', 'DESC');
+
+    const [items, total] = await queryBuilder.getManyAndCount();
+
+    return {
+      items,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
     };
   }
 }

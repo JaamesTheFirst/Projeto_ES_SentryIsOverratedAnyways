@@ -1,5 +1,5 @@
 import { api } from './api';
-import { ErrorGroup, ErrorListResponse, ErrorSeverity, ErrorStatus } from '../types';
+import { ErrorGroup, ErrorListResponse, ErrorComment, ErrorSeverity, ErrorStatus } from '../types';
 
 export interface ErrorFilters {
   projectId?: string;
@@ -58,6 +58,20 @@ export const errorsService = {
 
   delete: async (id: string): Promise<void> => {
     await api.delete(`/errors/${id}`);
+  },
+
+  // Comment methods
+  getComments: async (errorId: string): Promise<ErrorComment[]> => {
+    const response = await api.get<ErrorComment[]>(`/errors/${errorId}/comments`);
+    return response.data;
+  },
+
+  addComment: async (errorId: string, content: string, isInternal?: boolean): Promise<ErrorComment> => {
+    const response = await api.post<ErrorComment>(`/errors/${errorId}/comments`, {
+      content,
+      isInternal: isInternal || false,
+    });
+    return response.data;
   },
 };
 

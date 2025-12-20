@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { errorsService, ErrorFilters } from '../services/errors.service';
 import styles from './ErrorsPage.module.css';
 import '../styles/common.css';
 
 export const ErrorsPage = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [filters, setFilters] = useState<ErrorFilters>({
     dateRange: '7d',
@@ -25,6 +24,24 @@ export const ErrorsPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['errors'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-errors'] });
+    },
+    onError: (error) => {
+      console.error('Failed to update error status:', error);
+      alert('Failed to update error status. Please try again.');
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => errorsService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['errors'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-errors'] });
+    },
+    onError: (error) => {
+      console.error('Failed to delete error:', error);
+      alert('Failed to delete error. Please try again.');
     },
   });
 
@@ -186,9 +203,53 @@ export const ErrorsPage = () => {
                     <span className={styles.errorCountNumber}>{error.occurrenceCount}</span>
                     <span className={styles.errorCountLabel}>events</span>
                   </div>
-                  <Link to={`/error-detail/${error.id}`} className={`${styles.btn} ${styles.btnSm} ${styles.btnOutline}`}>
-                    View
-                  </Link>
+                  <div className={styles.errorActions}>
+                    {error.status !== 'resolved' && (
+                      <button
+                        className={`${styles.btn} ${styles.btnSm} ${styles.btnSuccess}`}
+                        onClick={() => updateStatusMutation.mutate({ id: error.id, status: 'resolved' })}
+                        disabled={updateStatusMutation.isPending}
+                        title="Mark as resolved"
+                      >
+                        ✓
+                      </button>
+                    )}
+                    {error.status !== 'ignored' && (
+                      <button
+                        className={`${styles.btn} ${styles.btnSm} ${styles.btnOutline}`}
+                        onClick={() => updateStatusMutation.mutate({ id: error.id, status: 'ignored' })}
+                        disabled={updateStatusMutation.isPending}
+                        title="Ignore error"
+                      >
+                        ⊘
+                      </button>
+                    )}
+                    {error.status === 'resolved' && (
+                      <button
+                        className={`${styles.btn} ${styles.btnSm} ${styles.btnOutline}`}
+                        onClick={() => updateStatusMutation.mutate({ id: error.id, status: 'unresolved' })}
+                        disabled={updateStatusMutation.isPending}
+                        title="Reopen error"
+                      >
+                        ↻
+                      </button>
+                    )}
+                    <button
+                      className={`${styles.btn} ${styles.btnSm} ${styles.btnDanger}`}
+                      onClick={() => {
+                        if (window.confirm('Are you sure you want to delete this error? This action cannot be undone.')) {
+                          deleteMutation.mutate(error.id);
+                        }
+                      }}
+                      disabled={deleteMutation.isPending}
+                      title="Delete error"
+                    >
+                      🗑️
+                    </button>
+                    <Link to={`/error-detail/${error.id}`} className={`${styles.btn} ${styles.btnSm} ${styles.btnOutline}`}>
+                      View
+                    </Link>
+                  </div>
                 </div>
               ))
             )}

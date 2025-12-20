@@ -23,7 +23,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     try {
       const secret = this.configService.get('JWT_SECRET', 'your-super-secret-jwt-key-change-in-production');
       const payload = this.jwtService.verify(token, { secret });
-      request.user = { userId: payload.sub, email: payload.email };
+      request.user = { userId: payload.sub, email: payload.email, role: payload.role };
       return true;
     } catch {
       throw new UnauthorizedException();

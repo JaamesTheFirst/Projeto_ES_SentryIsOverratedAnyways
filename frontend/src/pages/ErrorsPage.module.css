@@ -110,10 +110,9 @@
   padding: 1.5rem;
   border-bottom: 1px solid var(--border-color);
   display: grid;
-  grid-template-columns: 40px 1fr auto auto;
+  grid-template-columns: 1fr auto auto;
   gap: 1.5rem;
   align-items: center;
-  cursor: pointer;
   transition: background 0.2s;
 }
 
@@ -187,6 +186,37 @@
   display: block;
   font-size: 0.75rem;
   color: var(--text-secondary);
+}
+
+.errorActions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btnSuccess {
+  background: #10b981;
+  color: white;
+  border: none;
+}
+
+.btnSuccess:hover:not(:disabled) {
+  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.btnDanger {
+  background: #ef4444;
+  color: white;
+  border: none;
+}
+
+.btnDanger:hover:not(:disabled) {
+  background: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
 .pagination {

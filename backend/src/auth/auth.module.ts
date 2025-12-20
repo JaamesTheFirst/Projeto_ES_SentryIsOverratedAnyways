@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ApiKeyGuard } from './guards/api-key.guard';
+import { RolesGuard } from './guards/roles.guard';
 import { ProjectsModule } from '../projects/projects.module';
 
 @Module({
@@ -19,8 +20,8 @@ import { ProjectsModule } from '../projects/projects.module';
     }),
     forwardRef(() => ProjectsModule),
   ],
-  providers: [JwtStrategy, ApiKeyGuard],
-  exports: [JwtModule, PassportModule, ApiKeyGuard],
+  providers: [JwtStrategy, ApiKeyGuard, RolesGuard],
+  exports: [JwtModule, PassportModule, ApiKeyGuard, RolesGuard],
 })
 export class AuthModule {}
 

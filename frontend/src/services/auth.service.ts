@@ -7,6 +7,7 @@ export const authService = {
     password: string;
     firstName: string;
     lastName: string;
+    role?: 'user' | 'admin';
   }): Promise<User> => {
     const response = await api.post<User>('/auth/register', data);
     return response.data;
